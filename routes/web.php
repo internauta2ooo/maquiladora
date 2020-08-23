@@ -31,4 +31,4 @@ Route::get('/marca', function () {
 
 Auth::routes();
 
-Route::get('/marca', 'HomeController@index')->name('marca');
+Route::get('/home', 'HomeController@index')->name('home');
