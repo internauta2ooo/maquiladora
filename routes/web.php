@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 // Auth::routes();
-Route::view("/marca","marca");
+// Route::view("/marca","marca");
 route::get('/version', function () {
     return app()->version();
 });
@@ -23,8 +23,8 @@ route::get('/version', function () {
 
 
 // Route::get('/home', 'HomeController@index')->name('home');
-Route::get('/run', function () {
-    return view('welcome');
+Route::get('/marca', function () {
+    return view('marca');
 })->middleware('auth');
 
 
