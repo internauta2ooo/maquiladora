@@ -22,12 +22,18 @@ route::get('/version', function () {
 // Route::view("/marca","marca");
 
 
-// Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/marca', function () {
     return view('marca');
 })->middleware('auth');
 
+Route::get('/marcas', function () {
+    return view('marcas');
+})->middleware('auth');
 
+
+
+Route::get('/crearorden',"OrdenController@crearOrden");
 
 Auth::routes();
 

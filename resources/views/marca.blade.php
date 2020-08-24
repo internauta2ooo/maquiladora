@@ -1,29 +1,23 @@
-<html lang="en">
-
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
-  <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.1/themes/base/jquery-ui.css" />
-  <script src="https://cdn.jsdelivr.net/npm/signature_pad@2.3.2/dist/signature_pad.min.js"></script>
-  <link rel="stylesheet" href="{{asset('css/bootstrap.min.css')}}" />
-  <script src="{{asset('js/jquery.js')}}"></script>
-  <script src="{{asset('js/bootstrap.min.js')}}"></script>
-  <link rel="stylesheet" href="{{asset('css/estilosmarca.css')}}" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
-  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/jquery.appendgrid@2/dist/AppendGrid.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/table-to-json@1.0.0/lib/jquery.tabletojson.min.js" integrity="sha256-H8xrCe0tZFi/C2CgxkmiGksqVaxhW0PFcUKZJZo1yNU=" crossorigin="anonymous"></script>
-  <script src="http://code.jquery.com/ui/1.10.1/jquery-ui.js"></script>
-  <script src="{{asset('controladores/marca.js')}}"></script>
-  <script src="{{asset('controladores/firma.js')}}"></script>
-  <script src="{{asset('js/bootstrap-tagsinput.js')}}"></script>
-  <link rel="stylesheet" href="{{asset('css/bootstrap-tagsinput.css')}}" />
-  <title>Crear orden de entrega</title>
-</head>
-
-<body>
+@extends('layouts.app')
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.1/themes/base/jquery-ui.css" />
+<script src="https://cdn.jsdelivr.net/npm/signature_pad@2.3.2/dist/signature_pad.min.js"></script>
+<link rel="stylesheet" href="{{asset('css/bootstrap.min.css')}}" />
+<script src="{{asset('js/jquery.js')}}"></script>
+<script src="{{asset('js/bootstrap.min.js')}}"></script>
+<link rel="stylesheet" href="{{asset('css/estilosmarca.css')}}" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery.appendgrid@2/dist/AppendGrid.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/table-to-json@1.0.0/lib/jquery.tabletojson.min.js" integrity="sha256-H8xrCe0tZFi/C2CgxkmiGksqVaxhW0PFcUKZJZo1yNU=" crossorigin="anonymous"></script>
+<script src="http://code.jquery.com/ui/1.10.1/jquery-ui.js"></script>
+<script src="{{asset('controladores/marca.js')}}"></script>
+<script src="{{asset('controladores/firma.js')}}"></script>
+<script src="{{asset('js/bootstrap-tagsinput.js')}}"></script>
+<link rel="stylesheet" href="{{asset('css/bootstrap-tagsinput.css')}}" />
+@section('content')
+<div class="container">
   <h1>Modulo Marca</h1>
   <!-- Empezamos la primera vista -->
   <script>
@@ -56,6 +50,7 @@
       <input type="text" class="form-control" id="datepicker">
     </div>
   </div>
+
   <div id="segundafila">
     <div class="input-group input-group-sm mb-3 botones">
       <div class="input-group-prepend">
@@ -128,7 +123,12 @@
   <div class="wrapper">
     <canvas id="firma" class="signature-pad" width=400 height=200></canvas>
   </div>
-  <input type="button" class="btn btn-primary" value="Guardar" onclick="obtenerJson()" />
+  
+  <form method="GET" action="crearorden">
+  <textarea name="hola" id="insert" cols="30" rows="10"></textarea>
+<button type="submit"></button>
+  <!-- <input type="button" class="btn btn-primary" value="Guardar" onclick="obtenerJson()" />-->
+  </form> 
   <button id="save-png">Save as PNG</button>
   <button id="save-jpeg">Save as JPEG</button>
   <button id="save-svg">Save as SVG</button>
@@ -185,6 +185,12 @@
             </div>
           </div>
         </div>
-</body>
 
-</html>
+
+  <!-- termina header -->
+
+
+
+
+</div>
+@endsection
