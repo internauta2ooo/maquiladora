@@ -1,36 +1,54 @@
 @extends('layouts.app')
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
-<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.1/themes/base/jquery-ui.css" />
+<script src="{{asset('js/jquery.js')}}"></script>
+<script type="text/javascript" src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js"></script>
+<script type="text/javascript" src="{{ asset('js/typeahead.js') }}"></script>
+<!-- <script type="text/javascript" src="https://twitter.github.io/typeahead.js/releases/latest/typeahead.bundle.js"></script> -->
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" crossorigin="anonymous"></script> -->
+<!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" crossorigin="anonymous"></script> -->
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" /> -->
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css"> -->
+<!-- <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.1/themes/base/jquery-ui.css" /> -->
 <script src="https://cdn.jsdelivr.net/npm/signature_pad@2.3.2/dist/signature_pad.min.js"></script>
 <link rel="stylesheet" href="{{asset('css/bootstrap.min.css')}}" />
-<script src="{{asset('js/jquery.js')}}"></script>
-<script src="{{asset('js/bootstrap.min.js')}}"></script>
+<link rel="stylesheet" href="{{asset('css/jqueryuitheme.css')}}" />
 <link rel="stylesheet" href="{{asset('css/estilosmarca.css')}}" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
-<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/jquery.appendgrid@2/dist/AppendGrid.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/table-to-json@1.0.0/lib/jquery.tabletojson.min.js" integrity="sha256-H8xrCe0tZFi/C2CgxkmiGksqVaxhW0PFcUKZJZo1yNU=" crossorigin="anonymous"></script>
-<script src="http://code.jquery.com/ui/1.10.1/jquery-ui.js"></script>
-<script src="{{asset('controladores/marca.js')}}"></script>
 <script src="{{asset('controladores/firma.js')}}"></script>
-<script src="{{asset('js/bootstrap-tagsinput.js')}}"></script>
-<link rel="stylesheet" href="{{asset('css/bootstrap-tagsinput.css')}}" />
+<!-- <script src="https://code.jquery.com/jquery-1.12.4.js"></script> -->
+<!-- <script src="{{asset('js/bootstrap.min.js')}}"></script> -->
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script> -->
+<!-- <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script> -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/jquery.appendgrid@2/dist/AppendGrid.js"></script> -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/table-to-json@1.0.0/lib/jquery.tabletojson.min.js" integrity="sha256-H8xrCe0tZFi/C2CgxkmiGksqVaxhW0PFcUKZJZo1yNU=" crossorigin="anonymous"></script> -->
+<!-- <script src="http://code.jquery.com/ui/1.10.1/jquery-ui.js"></script> -->
+<!-- <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script> -->
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/typeahead.jquery.min.js"></script> -->
+<!-- <script src="{{asset('controladores/marca.js')}}"></script>
+<script src="{{asset('controladores/firma.js')}}"></script> -->
+<!-- <script src="{{asset('js/bootstrap-tagsinput.js')}}"></script> -->
+<!-- <link rel="stylesheet" href="{{asset('css/bootstrap-tagsinput.css')}}" /> -->
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" crossorigin="anonymous"></script> -->
+
 @section('content')
 <div class="container">
   <h1>Modulo Marca</h1>
   <!-- Empezamos la primera vista -->
-  <script>
-    var real = obtenerMarcas();
-  </script>
-  <!-- Data tables -->
+  <div id="the-basics">
+    <input  class="typeahead form-control" type="text" placeholder="Selecciona una marca" />
+  </div>
+  
+
+
   <div id="filaprincipal">
-    <div class="input-group input-group-sm mb-3 botones">
+    <div id="the-basics" class="input-group input-group-sm mb-3 botones ">
       <div class="input-group-prepend">
         <span class="input-group-text" id="inputGroup-sizing-sm">Marca</span>
       </div>
-      <input type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+     
+        <input  class="typeahead form-control" type="text" placeholder="Selecciona una marca" />
+      
+      {{-- <input type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm"> --}}
     </div>
+    <script src="{{asset('controladores/marca.js')}}"></script>
     <div class="input-group input-group-sm mb-3 botones">
       <div class="input-group-prepend">
         <span class="input-group-text" id="inputGroup-sizing-sm">Folio</span>
@@ -123,12 +141,12 @@
   <div class="wrapper">
     <canvas id="firma" class="signature-pad" width=400 height=200></canvas>
   </div>
-  
-  <form method="GET" action="crearorden">
-  <textarea name="hola" id="insert" cols="30" rows="10"></textarea>
-<button type="submit"></button>
-  <!-- <input type="button" class="btn btn-primary" value="Guardar" onclick="obtenerJson()" />-->
-  </form> 
+
+  {{-- <form method="GET" action="crearorden">
+    <textarea name="hola" id="insert" cols="30" rows="10"></textarea>
+    <button type="submit"></button>
+    <!-- <input type="button" class="btn btn-primary" value="Guardar" onclick="obtenerJson()" />-->
+  </form> --}}
   <button id="save-png">Save as PNG</button>
   <button id="save-jpeg">Save as JPEG</button>
   <button id="save-svg">Save as SVG</button>
@@ -185,12 +203,5 @@
             </div>
           </div>
         </div>
-
-
-  <!-- termina header -->
-
-
-
-
-</div>
-@endsection
+      </div>
+      @endsection

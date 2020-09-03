@@ -1,22 +1,83 @@
-var tablaModelosData;
-var tablaTallasData;
-var tablaCoordinadosData;
-var tablaColoresData;
+var substringMatcher = function (strs) {
+  return function findMatches(q, cb) {
+    var matches, substringRegex;
 
-$(".ssss").change(function(){
+    // an array that will be populated with substring matches
+    matches = [];
+
+    // regex used to determine if a string contains the substring `q`
+    substrRegex = new RegExp(q, 'i');
+
+    // iterate through the pool of strings and for any string that
+    // contains the substring `q`, add it to the `matches` array
+    $.each(strs, function (i, str) {
+      if (substrRegex.test(str)) {
+        matches.push(str);
+      }
+    });
+
+    cb(matches);
+  };
+};
+
+var states = ['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California',
+  'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii',
+  'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana',
+  'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota',
+  'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire',
+  'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota',
+  'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island',
+  'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont',
+  'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'
+];
+
+$('#the-basics .typeahead').typeahead({
+  hint: true,
+  highlight: true,
+  minLength: 1
+}, {
+  name: 'states',
+  source: substringMatcher(states)
+}).on('typeahead:open', function () { }).on('typeahead:rendered', function (element, data) { // 검색 결과 화면 생성 이벤트
+}).on('typeahead:cursorchanged', function (element, data) { // 위 아래 커서 이동시 이벤트
+}).on('typeahead:selected', function (element, data) { // 선택 이벤트
+}).on('typeahead:autocompleted', function (element, data) { // 검색어 자동완성 이벤트
+});
+function obtenerMarcasss() {
+
+
+  var availableTags = [
+    "Rock",
+    "Rap",
+    "Trova",
+    "Blues",
+    "Country",
+    "Folk",
+    "Jass",
+    "POP",
+    "Electronic"
+  ];
+  $("#tags").autocomplete({
+    source: availableTags
+  });
+};
+
+
+
+$(".ssss").change(function () {
   alert("The text has been changed.");
-}); 
+});
 
-$("tblSample input").change(function(){
+$("tblSample input").change(function () {
   alert("The text has been changed.");
-}); 
+});
 
-function actualizarValor(thiss){
-alert("ol");
-// console.log($("#yeah").val());
-// console.log(thiss);
-console.log("true value");
-console.log(thiss.value);
+function actualizarValor(thiss) {
+  alert("ol");
+  // console.log($("#yeah").val());
+  // console.log(thiss);
+  console.log("true value");
+  console.log(thiss.value);
 }
 
 $(document).ready(function () {
@@ -25,38 +86,38 @@ $(document).ready(function () {
   });
 });
 function obtenerJson() {
- 
-  
+
+
   // console.log("La tabla -> objeto de DOM");
   // console.log(document.getElementById("tblSample"));
   // console.log(document.getElementById("tblSample").rows[0].cells[0].innerHTML);
   // console.log(document.getElementById("tblSample").rows[0].cells.length);
-  var filas=document.getElementById("tblSample").rows.length;
-  var columnas=document.getElementById("tblSample").rows[0].cells.length
-  for(var filasi=0;filasi<filas;filasi){
-    console.log("el for" +filasi);
+  var filas = document.getElementById("tblSample").rows.length;
+  var columnas = document.getElementById("tblSample").rows[0].cells.length
+  for (var filasi = 0; filasi < filas; filasi) {
+    console.log("el for" + filasi);
     // console.log(document.getElementById("tblSample").rows[i].cells[1].firstChild);
 
-    for(var columnasi=0;columnasi<columnas;columnasi){
-      console.log("la columna: "+columnasi);      
+    for (var columnasi = 0; columnasi < columnas; columnasi) {
+      console.log("la columna: " + columnasi);
       // console.log(document.getElementById("tblSample").rows[filasi].cells[columnasi]);
       // console.log(document.getElementById("tblSample").rows[filasi].cells[columnasi].firstChild.value);
       console.log(document.getElementById("tblSample").rows[filasi].cells[columnasi]);
       console.log(document.getElementById("tblSample").rows[filasi].cells[columnasi].firstChild.value);
       columnasi++;
     }
-    
+
 
 
     filasi++;
   }
 
   var x = document.getElementById("tblSample").rows[2].cells[2].firstChild.value;
-//   // var x = document.getElementById("tblSample").rows[2].cells[2].firstChild.value;
-//   console.log(.rows[2].cells[3].firstChild.value);
-//   var x = document.getElementById("tblSample").rows[2].cells[2];
-//   console.log("el value");
-//   console.log(x);
+  //   // var x = document.getElementById("tblSample").rows[2].cells[2].firstChild.value;
+  //   console.log(.rows[2].cells[3].firstChild.value);
+  //   var x = document.getElementById("tblSample").rows[2].cells[2];
+  //   console.log("el value");
+  //   console.log(x);
 }
 function modalCrearOrdenMaquila() {
   $('#crearOrdenMaquila').modal('toggle');
@@ -552,11 +613,11 @@ function addRow(tblId) {
 
       // let z = x.insertCell(0); 
       // y.innerHTML = ' <input type="text"  id="yeah" name="yeah" oninput="actualizarValor(this);"/> ';
-      var elinput=document.createElement('input');
-      elinput.setAttribute("value","");
+      var elinput = document.createElement('input');
+      elinput.setAttribute("value", "");
       elinput.classList.add("form-control");
 
-      
+
       y.appendChild(elinput);
       //   y.innerHTML=i+"ss";
       // console.log(i);
@@ -583,50 +644,3 @@ function deleteColumn(tblId) {
     }
   }
 }
-
-
-////////////////////////////////// 
-////////////////////////////////// 
-////////////////////////////////// 
-
-// $("#tagBox").tagging();
-
-
-
-////////////////////
-////////////////////
-////////////////////
-
-////////////////////
-
-
-// var canvas =  document.getElementById('firma');
-// console.log(canvas);
-// var signaturePad = new SignaturePad(canvas);
-
-// // Returns signature image as data URL (see https://mdn.io/todataurl for the list of possible parameters)
-// signaturePad.toDataURL(); // save image as PNG
-// signaturePad.toDataURL("image/jpeg"); // save image as JPEG
-// signaturePad.toDataURL("image/svg+xml"); // save image as SVG
-
-// // Draws signature image from data URL.
-// // NOTE: This method does not populate internal data structure that represents drawn signature. Thus, after using #fromDataURL, #toData won't work properly.
-// signaturePad.fromDataURL("data:image/png;base64,iVBORw0K...");
-
-// // Returns signature image as an array of point groups
-// const data = signaturePad.toData();
-
-// // Draws signature image from an array of point groups
-// signaturePad.fromData(data);
-
-// // Clears the canvas
-// signaturePad.clear();
-
-// // Returns true if canvas is empty, otherwise returns false
-// signaturePad.isEmpty();
-
-// // Unbinds all event handlers
-// signaturePad.off();
-
-// // Rebinds all event handlers
-// signaturePad.on();
