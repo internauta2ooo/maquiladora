@@ -30,10 +30,12 @@ Route::get('/marca', function () {
 Route::get('/marcas', function () {
     return view('marcas');
 })->middleware('auth');
+Route::get('/marcastest', function () {
+    return view('marcatest');
+})->middleware('auth');
 
 
-
-Route::get('/crearorden',"OrdenController@crearOrden");
+Route::get('/crearorden', "OrdenController@crearOrden");
 
 Auth::routes();
 

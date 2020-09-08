@@ -1,7 +1,7 @@
 @extends('layouts.app')
 <script src="{{asset('js/jquery.js')}}"></script>
 <script type="text/javascript" src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js"></script>
-<script type="text/javascript" src="{{ asset('js/typeahead.js') }}"></script>
+{{-- <script type="text/javascript" src="{{ asset('js/typeahead.js') }}"></script> --}}
 <!-- <script type="text/javascript" src="https://twitter.github.io/typeahead.js/releases/latest/typeahead.bundle.js"></script> -->
 <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" crossorigin="anonymous"></script> -->
 <!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" crossorigin="anonymous"></script> -->
@@ -14,7 +14,7 @@
 <link rel="stylesheet" href="{{asset('css/estilosmarca.css')}}" />
 <script src="{{asset('controladores/firma.js')}}"></script>
 <!-- <script src="https://code.jquery.com/jquery-1.12.4.js"></script> -->
-<!-- <script src="{{asset('js/bootstrap.min.js')}}"></script> -->
+<script src="{{asset('js/bootstrap.min.js')}}"></script>
 <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script> -->
 <!-- <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script> -->
 <!-- <script src="https://cdn.jsdelivr.net/npm/jquery.appendgrid@2/dist/AppendGrid.js"></script> -->
