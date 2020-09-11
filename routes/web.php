@@ -27,14 +27,6 @@ Route::get('/marca', function () {
     return view('marca');
 })->middleware('auth');
 
-Route::get('/marcas', function () {
-    return view('marcas');
-})->middleware('auth');
-Route::get('/marcastest', function () {
-    return view('marcatest');
-})->middleware('auth');
-
-
 Route::get('/obtenermarcasauto', "OrdenController@obtenerMarcasAutocomplete")->middleware('auth');
 
 Auth::routes();
