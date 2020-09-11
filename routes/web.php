@@ -35,7 +35,7 @@ Route::get('/marcastest', function () {
 })->middleware('auth');
 
 
-Route::get('/crearorden', "OrdenController@crearOrden");
+Route::get('/obtenermarcasauto', "OrdenController@obtenerMarcasAutocomplete")->middleware('auth');
 
 Auth::routes();
 
