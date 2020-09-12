@@ -32,3 +32,7 @@ Route::get('/obtenermarcasauto', "OrdenController@obtenerMarcasAutocomplete")->m
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
