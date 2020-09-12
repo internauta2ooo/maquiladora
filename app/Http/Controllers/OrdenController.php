@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use app\Http\Servicios\OrdenServicios;
+use App\Http\Servicios\OrdenServicios;
 
 class OrdenController extends Controller
 {
@@ -20,6 +20,7 @@ class OrdenController extends Controller
 
     public function crearPdfOrdenTrabajo()
     {
+
         OrdenServicios::crearPdfOrden();
         $pdf = app("dompdf.wrapper");
         $pdf->loadHTML('<h1>Yeah.com</h1>');
