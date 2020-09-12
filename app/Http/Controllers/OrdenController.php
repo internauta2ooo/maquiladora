@@ -15,7 +15,6 @@ class OrdenController extends Controller
      */
     public function obtenerMarcasAutocomplete()
     {
-        OrdenServicios::crearPdfOrden();
         return DB::table('marca')->select('marca_id as value', 'nombre as label')->get();
     }
 
