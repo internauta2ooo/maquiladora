@@ -6,7 +6,7 @@
         <div class="col-md-12">
             <div id="app" class="content">            
                 <!--Añadimos nuestro componente vuejs-->
-                <ordenes-entrega></ordenes-entrega>
+                <ordenes-maquila></ordenes-maquila>
                 
             </div>
         </div>
