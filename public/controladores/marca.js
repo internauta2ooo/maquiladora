@@ -3,8 +3,22 @@ $(document).ready(function () {
     format: "dd/mm/yyyy"
   });
 });
+function validarFormulario() {
+  console.log(document.getElementsByName("entradastallas"));
+  console.log(document.getElementsByName("entradastallas"));
+  let listaentradas = document.getElementsByName("entradastallas");
+  listaentradas.forEach(
+    function (currentValue, index, listObject) {
+      console.log(currentValue.value + ",   " + index);
+      console.log(currentValue.value);
+      if (currentValue.value == "") {
+        alert("Por favor llenar todas la entradas de tallas");
+        throw "Break";
+      }
+    }
+  );
+}
 function obtenerJson() {
-
   var filas = document.getElementById("tblSample").rows.length;
   var columnas = document.getElementById("tblSample").rows[0].cells.length;
   for (var filasi = 0; filasi < filas; filasi) {
@@ -24,7 +38,6 @@ function obtenerJson() {
     }
     filasi++;
   }
-
   var x = document.getElementById("tblSample").rows[2].cells[2].firstChild
     .value;
 }
@@ -49,12 +62,10 @@ function obtenerMarcas() {
         console.log(data[key].marca_id);
         Object.assign(data[key], botonInformacion);
       });
-
       $(document).ready(function () {
         var table = $("#table_id").DataTable({
           responsive: true,
           data: data,
-
           columns: [
             { data: "marca_id" },
             { data: "nombre" },
@@ -63,14 +74,12 @@ function obtenerMarcas() {
             { data: "botonInformacion" }
           ]
         });
-
         $("#table_id ").on("click", "td:nth-child(5n)", function () {
           let marcaId = table.cell(this, 0).data();
         });
       });
     })
     .catch
-    //Do nothing
     ();
 }
 //Al dar click en ver infomacion
@@ -122,7 +131,7 @@ function actualizarModelos(marcaId) {
       console.log(response);
       // alert("Actualizamos aqui haremos el recharge del icono");
       $("#verModalModelos").modal("toggle");
-      verInformacionModelos(marcaId);
+      // verInformacionModelos(marcaId);
     })
     .catch();
 }
@@ -431,7 +440,7 @@ function actualizarInformacionModelo(modeloId) {
 }
 
 function actualizarTallas(modeloId, dataTallas) {
-  0;
+
   axios
     .post(
       "http://192.168.100.231:8089/talla/actualizarTallas?modeloId=" +
@@ -453,23 +462,20 @@ function addColumn(tblId) {
     var newTH = document.createElement("th");
     tblHeadObj.rows[h].appendChild(newTH);
     newTH.innerHTML =
-      '<input type="text" class="form-control" id="yeah" name="yeah" oninput="actualizarValor(this)"/>';
+      '<input type="text" class="form-control" id="yeah" name="entradastallas" oninput="actualizarValor(this)"/>';
   }
-
   var tblBodyObj = document.getElementById(tblId).tBodies[0];
   for (var i = 0; i < tblBodyObj.rows.length; i++) {
     var newCell = tblBodyObj.rows[i].insertCell(-1);
     newCell.innerHTML =
-      ' <input type="text" class="form-control" id="yeah" name="yeah" oninput="actualizarValor(this)"/> ';
+      ' <input type="text" class="form-control" id="yeah" name="entradastallas" oninput="actualizarValor(this)"/> ';
   }
 }
 function addRow(tblId) {
   console.log("Para las filas");
-
   console.log(document.getElementById(tblId).rows.length);
   console.log(document.getElementById("tblSample").rows[0].cells.length);
   var x = document.getElementById("tblSample").insertRow(-1);
-
   for (
     var i = 0;
     i < document.getElementById("tblSample").rows[0].cells.length;
@@ -479,7 +485,7 @@ function addRow(tblId) {
     if (i == 0) {
       y.innerHTML = i + "ss";
       y.innerHTML =
-        '<select id="cordinadostabla" tablaclass="custom-select" name="coordinadoselect">' + document.getElementById('cordinadostabla').innerHTML + '</select>';
+        '<select id="coordinadostabla" tablaclass="custom-select" name="coordinadoselect">' + document.getElementById('coordinadostabla').innerHTML + '</select>';
       console.log("que eso?");
       // console.log(document.getElementByName('coordinadoselect').innerHTML);
       console.log(document.getElementsByTagName('coordinadoselect').innerHTML);
@@ -488,7 +494,7 @@ function addRow(tblId) {
       var elinput = document.createElement("input");
       elinput.setAttribute("value", "");
       elinput.classList.add("form-control");
-
+      elinput.name = "entradastallas";
       y.appendChild(elinput);
 
     }
