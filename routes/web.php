@@ -28,10 +28,10 @@ Route::get('/marca', function () {
 })->middleware('auth');
 
 Route::get('/obtenermarcasauto', "OrdenController@obtenerMarcasAutocomplete")->middleware('auth');
+Route::post('/crearordenmaquila', "OrdenController@crearOrdenMaquila");
 
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
 Route::get('/ordenpdf', 'OrdenController@crearPdfOrdenTrabajo');
-

@@ -17,10 +17,19 @@ class OrdenController extends Controller
     {
         return DB::table('marca')->select('marca_id as value', 'nombre as label')->get();
     }
+    public function crearOrdenMaquila(Request $request)
+    {
+        $objOrdenServicio = new OrdenServicios();
+        if ($request->nuevaMarca) {
+            $idMarcaNueva = $objOrdenServicio->insertarMarca($request->nombreMarca, $request->nombreMarca);
+        }
+        //$marcaId, $folio, $modelo, $prenda, $coordinado
+        $objOrdenServicio->insertarOrdenMaquila($idMarcaNueva, $request->numeroOrden, $request->modelo, $request->prenda, $request->coordinado);
 
+        return $request;
+    }
     public function crearPdfOrdenTrabajo()
     {
-
         OrdenServicios::crearPdfOrden();
         $pdf = app("dompdf.wrapper");
         $pdf->loadHTML('<h1>Yeah.com</h1>');

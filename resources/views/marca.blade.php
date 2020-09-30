@@ -52,7 +52,7 @@
       <div class="input-group-prepend">
         <span class="input-group-text" id="inputGroup-sizing-sm">Coordinado</span>
       </div>
-      <input type="text" class="form-control" name="country" placeholder="" />
+      <input type="text" class="form-control" name="coordinados" placeholder="" />
     </div>
   </div>
   <div id="cuartafila" class="filas">
@@ -176,7 +176,7 @@
 
         }
         if (i > 0 && j == totalColumnas - 1) {
-          console.log("Solo deberia ir este" + (totalColumnas - 1));
+          // console.log("Solo deberia ir este" + (totalColumnas - 1));
           let texto = JSON.stringify(ordenEntrada);
           let reConvertido = JSON.parse(texto);
           totalEntradas.push(reConvertido);
@@ -188,44 +188,96 @@
     console.log("total entradas");
     console.log(totalEntradas);
 
-    let idMarca = document.getElementById("idmarca").value;
-    let marca = document.getElementById("tags").value;
+    console.log("logssss inputs");
+    let coordinados = $('input[name="coordinados"]').amsifySuggestags();
+
+    console.log(coordinados);
+    // var o = document.getElementById("coordinadostabla");
+    // console.log(o);
+    // for (let i = 0; i < o.options.length; i++) {
+    //   console.log(o.options[i].value);
+    //   tagsinput.push(o.options[i].value);
+    // }
+    // var buscandoMarca = marcas.find(item => item.label === marca);
+
+    // if (typeof buscandoMarca !== 'undefined') {
+    //   // alert("Si me encuentro");
+    //   console.log(buscandoMarca);
+    // } else {
+    //   // alert("No encuentro esta marca");
+    //   console.log(buscandoMarca);
+    // }
+    let nombreMarca = document.getElementById("tags").value;
+    let nuevaMarca = true;
+    idMarca = "";
+    if (nombreMarca == null || nombreMarca == "") {
+      alert("Favor de llenar la marca...");
+    } else {
+      console.log("logffff");
+      console.log(nombreMarca);
+      console.log(availableTags);
+      availableTags.filter(function(item) {
+        console.log("el item");
+        console.log(item)
+        if (item.label === nombreMarca) {
+          nuevaMarca = false;
+          console.log("soy true?");
+          idMarca = document.getElementById("idmarca").value;
+        }
+      });
+    }
+    console.log("la log ++++");
+    console.log(nuevaMarca);
+    console.log("para la data");
     let numeroOrden = document.getElementById("numeroorden").value;
     let modelo = document.getElementById("modelo").value;
-    let fechaCreacionOrden = document.getElementById("fechacreacion").value;
     let fechaEntrega = document.getElementById("fechaentrega").value;
     let prenda = document.getElementById("prenda").value;
-    var tagsinput = [];
     let muestraOriginal = $('input[name=muestraoriginal]:checked').val();
     let muestraReferencia = $('input[name=muestrareferencia]:checked').val();
-
-    var datoOrdenEntrega = {
-      marca: marca,
+    let ordenMaquila = {
+      nombreMarca: nombreMarca,
+      nuevaMarca: nuevaMarca,
       idMarca: idMarca,
-      numeroOrden: numeroOrden,
-      modelo: modelo,
-      fechaCreacionOrden: fechaCreacionOrden,
-      fechaEntrega: fechaEntrega,
-      prenda: prenda,
+      muestraOriginal: muestraOriginal,
       muestraReferencia: muestraReferencia,
-      muestraOriginal: muestraReferencia
+      modelo: modelo,
+      prenda: prenda,
+      numeroOrden: numeroOrden,
+      fechaEntrega: fechaEntrega,
+      totalEntradas: totalEntradas
     };
+    axios.post("crearordenmaquila", ordenMaquila).then(response => {
+      console.log("la response de fuardas");
+      console.log(response);
+    }).catch(error => {
+      console.log(error);
+    });
+    // let marca = document.getElementById("tags").value;
+    console.log(ordenMaquila);
 
-    var o = document.getElementById("coordinadostabla");
+    // let idMarca = document.getElementById("idmarca").value;
+    // let marca = document.getElementById("tags").value;
+    // let numeroOrden = document.getElementById("numeroorden").value;
+    // let modelo = document.getElementById("modelo").value;
+    // let fechaCreacionOrden = document.getElementById("fechacreacion").value;
+    // let fechaEntrega = document.getElementById("fechaentrega").value;
+    // let prenda = document.getElementById("prenda").value;
+    // var tagsinput = [];
+    // let muestraOriginal = $('input[name=muestraoriginal]:checked').val();
+    // let muestraReferencia = $('input[name=muestrareferencia]:checked').val();
 
-    for (let i = 0; i < o.options.length; i++) {
-      console.log(o.options[i].value);
-      tagsinput.push(o.options[i].value);
-    }
-    var buscandoMarca = marcas.find(item => item.label === marca);
-
-    if (typeof buscandoMarca !== 'undefined') {
-      // alert("Si me encuentro");
-      console.log(buscandoMarca);
-    } else {
-      // alert("No encuentro esta marca");
-      console.log(buscandoMarca);
-    }
+    // var datoOrdenEntrega = {
+    //   marca: marca,
+    //   idMarca: idMarca,
+    //   numeroOrden: numeroOrden,
+    //   modelo: modelo,
+    //   fechaCreacionOrden: fechaCreacionOrden,
+    //   fechaEntrega: fechaEntrega,
+    //   prenda: prenda,
+    //   muestraReferencia: muestraReferencia,
+    //   muestraOriginal: muestraReferencia
+    // };
   }
 </script>
 <script>
@@ -240,7 +292,7 @@
   $("#fechaentrega").datepicker();
 </script>
 <script>
-  $('input[name="country"]').amsifySuggestags();
+  $('input[name="coordinados"]').amsifySuggestags();
 </script>
 
 <style>
