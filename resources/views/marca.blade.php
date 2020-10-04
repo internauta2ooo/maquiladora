@@ -104,6 +104,7 @@
     </table>
   </div>
   <button type="button" class="btn btn-primary botonprincipal" onclick="crearOrdenMaquila()">Guardar orden de maquila</button>
+  <button type="button" class="btn btn-primary botonprincipal" onclick="obtenerOrdenesMaquila()">Obtener Ordenes</button>
   <!-- <div class="wrapper">
     <canvas id="firma" class="signature-pad" width=400 height=200></canvas>
   </div>
@@ -121,6 +122,17 @@
 <script>
   var availableTags;
   var marcas;
+
+  function obtenerOrdenesMaquila() {
+    axios.get("obtenerordenesmaquila").then(response => {
+      console.log("traemos las ordenes de entrega");
+      console.log(response);
+    }).catch(error => {
+
+      console.log("error general");
+    });
+
+  }
 
   function obtenerMarcas() {
     axios.get("obtenermarcasauto").then(response => {

@@ -35,3 +35,5 @@ Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 
 Route::get('/ordenpdf', 'OrdenController@crearPdfOrdenTrabajo');
+
+Route::get('/obtenerordenesmaquila', 'OrdenController@obtenerOrdenesMaquila');

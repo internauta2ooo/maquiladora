@@ -65,4 +65,11 @@ class OrdenController extends Controller
         $pdf->loadHTML('<h1>Yeah.com</h1>');
         return $pdf->download("mipdf.pdf");
     }
+
+    public function obtenerOrdenesMaquila()
+    {
+        $objOrdenes = new OrdenServicios();
+        $listaOrdenes = $objOrdenes->obtenerOrdenes();
+        return "sss";
+    }
 }
