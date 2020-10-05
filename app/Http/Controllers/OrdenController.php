@@ -66,10 +66,14 @@ class OrdenController extends Controller
         return $pdf->download("mipdf.pdf");
     }
 
-    public function obtenerOrdenesMaquila()
+    public function obtenerOrdenesMaquilaTallas()
     {
         $objOrdenes = new OrdenServicios();
-        $listaOrdenes = $objOrdenes->obtenerOrdenes();
-        return "sss";
+        return $objOrdenes->obtenerOrdenes();
+    }
+
+    public function obtenerOrdenesMaquila()
+    {
+        return view('ordenesmaquila');
     }
 }

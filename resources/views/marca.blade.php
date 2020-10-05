@@ -5,6 +5,7 @@
 <link rel="stylesheet" href="{{asset('css/jqueryuitheme.css')}}" />
 <link rel="stylesheet" href="{{asset('css/estilosmarca.css')}}" />
 <script type="text/javascript" src="{{asset('js/firmapadlibreria.js')}}"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 <!-- Iconos para el tag input -->
 <link rel="stylesheet" href="{{asset('css/awesomeiconstags.css')}}" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" />
@@ -123,6 +124,7 @@
   var availableTags;
   var marcas;
 
+
   function obtenerOrdenesMaquila() {
     axios.get("obtenerordenesmaquila").then(response => {
       console.log("traemos las ordenes de entrega");
@@ -161,7 +163,28 @@
   }
 
   function crearOrdenMaquila() {
+    let nombreMarca = document.getElementById("tags").value;
+    let nuevaMarca = true;
+    idMarca = "";
+    if (nombreMarca == null || nombreMarca == "") {
+      alert("Favor de llenar la marca...");
+      return false;
+    } else {
+      console.log("logffff");
+      console.log(nombreMarca);
+      console.log(availableTags);
+      availableTags.filter(function(item) {
+        console.log("el item");
+        console.log(item)
+        if (item.label === nombreMarca) {
+          nuevaMarca = false;
+          console.log("soy true?");
+          idMarca = document.getElementById("idmarca").value;
+        }
+      });
+    }
     validarFormulario();
+    Swal.showLoading();
     var tablaPartidas = document.getElementById("tblSample");
     var totalEntradas = [];
     var ordenEntrada = {
@@ -219,25 +242,7 @@
     //   // alert("No encuentro esta marca");
     //   console.log(buscandoMarca);
     // }
-    let nombreMarca = document.getElementById("tags").value;
-    let nuevaMarca = true;
-    idMarca = "";
-    if (nombreMarca == null || nombreMarca == "") {
-      alert("Favor de llenar la marca...");
-    } else {
-      console.log("logffff");
-      console.log(nombreMarca);
-      console.log(availableTags);
-      availableTags.filter(function(item) {
-        console.log("el item");
-        console.log(item)
-        if (item.label === nombreMarca) {
-          nuevaMarca = false;
-          console.log("soy true?");
-          idMarca = document.getElementById("idmarca").value;
-        }
-      });
-    }
+
     console.log("la log ++++");
     console.log(nuevaMarca);
     console.log("para la data");
@@ -262,8 +267,24 @@
     axios.post("crearordenmaquila", ordenMaquila).then(response => {
       console.log("la response de fuardas");
       console.log(response);
+      Swal.close();
+      Swal.fire({
+        position: 'center',
+        icon: 'success',
+        title: 'Se guardo la orden correctamente',
+        showConfirmButton: false,
+        timer: 2500
+      })
+      window.location.href = 'ordenesmaquila';
     }).catch(error => {
       console.log(error);
+      Swal.fire({
+        position: 'center',
+        icon: 'error',
+        title: 'Opps! Hubo un error',
+        showConfirmButton: false,
+        timer: 2500
+      })
     });
     // let marca = document.getElementById("tags").value;
     console.log(ordenMaquila);
