@@ -12,11 +12,13 @@ class OrdenServicios
         return "bye";
     }
 
-    static public function insertarOrdenMaquila($marcaId, $folio, $modelo, $prenda, $coordinado, $fechaEntrega)
+    static public function insertarOrdenMaquila($marcaId, $folio, $modelo, $prenda, $coordinado, $fechaEntrega, $muestraOriginal, $muestraReferencia)
     {
         $id = DB::table('orden_entrega')->insertGetId([
             "marca_id" => $marcaId, "folio_id" => $folio, "modelo_id" => $modelo,
-            "prenda_id" => $prenda, "coordinado_id" => $coordinado, "fecha_entrega" => $fechaEntrega
+            "prenda_id" => $prenda, "coordinado_id" => $coordinado, "fecha_entrega" => $fechaEntrega,
+            "muestra_original" => $muestraOriginal,
+            "muestra_referencia" => $muestraReferencia
         ]);
         var_dump("orden entrega 3.0");
         var_dump($id);
@@ -59,7 +61,8 @@ class OrdenServicios
                 "coe2.cantidad_orden",
                 "coe2.cantidad_orden_entregadas",
             )->get();
-
+        // var_dump("el query");
+        // var_dump($ordenesEntrega);
         $arregloOrdenes = [];
 
         foreach ($ordenesEntrega as $key => $item) {
@@ -72,7 +75,8 @@ class OrdenServicios
             $orden["muestra_original"] = $item->muestra_original;
             array_push($arregloOrdenes, $orden);
         }
-
+        // var_dump("creando los principales");
+        // var_dump($arregloOrdenes);
         $arregloOrdenes = array_unique($arregloOrdenes, SORT_REGULAR);
         $ordenes = [];
 
@@ -95,6 +99,8 @@ class OrdenServicios
             $item["ordenesTallas"] = $orden;
             array_push($ordenes, $item);
         }
+        // var_dump("after");
+        // var_dump($ordenes);
         return json_encode($ordenes);
     }
 

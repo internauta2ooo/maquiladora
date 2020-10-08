@@ -29,7 +29,9 @@ class OrdenController extends Controller
             $request->modelo,
             $request->prenda,
             $request->coordinado,
-            $request->fechaEntrega
+            $request->fechaEntrega,
+            $request->muestraOriginal,
+            $request->muestraReferencia,
         );
         $filasTotalEntradas = $request->totalEntradas;
         foreach ($filasTotalEntradas as $item) {

@@ -3,7 +3,8 @@
 <script type="text/javascript" src="{{asset('js/jquery2.js')}}"></script>
 <script type="text/javascript" src="{{asset('js/jqueryui1.js')}}"></script>
 <link rel="stylesheet" href="{{asset('css/bootstrap.min.css')}}" />
-<link rel="stylesheet" href="{{asset('css/jqueryuitheme.css')}}" />
+<link href="{{asset('css/jqueryuitheme.css')}}" rel="stylesheet" />
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.1/themes/base/jquery-ui.css" />
 <link rel="stylesheet" href="{{asset('css/estilosmarca.css')}}" />
 <script type="text/javascript" src="{{asset('js/firmapadlibreria.js')}}"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
@@ -62,10 +63,10 @@
       <div class="input-group-prepend">
         <span class="input-group-text" id="inputGroup-sizing-sm">Muestra Referencia</span>
         <div class="radio miradio">
-          <label><input type="radio" value=true name="muestrareferencia" checked>Si</label>
+          <label><input type="radio" value=true name="muestrareferencia">Si</label>
         </div>
         <div class="radio miradio">
-          <label><input type="radio" value=false name="muestrareferencia">No</label>
+          <label><input type="radio" value=false name="muestrareferencia" checked>No</label>
         </div>
       </div>
     </div>
@@ -73,10 +74,10 @@
       <div class="input-group-prepend">
         <span class="input-group-text" id="inputGroup-sizing-sm">Muestra Original</span>
         <div class="radio miradio">
-          <label><input type="radio" name="muestra" checked>Si</label>
+          <label><input type="radio" value=true name="muestraoriginal">Si</label>
         </div>
         <div class="radio miradio">
-          <label><input type="radio" name="muestra">No</label>
+          <label><input type="radio" value=false name="muestraoriginal" checked>No</label>
         </div>
       </div>
     </div>
@@ -106,7 +107,6 @@
     </table>
   </div>
   <button type="button" class="btn btn-primary botonprincipal" onclick="crearOrdenMaquila()">Guardar orden de maquila</button>
-  <button type="button" class="btn btn-primary botonprincipal" onclick="obtenerOrdenesMaquila()">Obtener Ordenes</button>
   <!-- <div class="wrapper">
     <canvas id="firma" class="signature-pad" width=400 height=200></canvas>
   </div>
@@ -119,22 +119,18 @@
   <script src="{{asset('controladores/firma.js')}}"></script> -->
 
 </div>
-<!-- </div> -->
 <script type="text/javascript" src="{{asset('controladores/marca.js')}}"></script>
 <script>
   var availableTags;
   var marcas;
-
 
   function obtenerOrdenesMaquila() {
     axios.get("obtenerordenesmaquila").then(response => {
       console.log("traemos las ordenes de entrega");
       console.log(response);
     }).catch(error => {
-
       console.log("error general");
     });
-
   }
 
   function obtenerMarcas() {
@@ -209,7 +205,6 @@
         if (i > 0 && j > 1) {
           let latalla = col.firstElementChild.value;
           ordenEntrada[tablaPartidas.rows[0].cells[j].firstElementChild.value] = latalla;
-
         }
         if (i > 0 && j == totalColumnas - 1) {
           // console.log("Solo deberia ir este" + (totalColumnas - 1));
@@ -220,31 +215,11 @@
 
       }
     }
-
     console.log("total entradas");
     console.log(totalEntradas);
-
     console.log("logssss inputs");
     let coordinados = $('input[name="coordinados"]').amsifySuggestags();
-
     console.log(coordinados);
-    // var o = document.getElementById("coordinadostabla");
-    // console.log(o);
-    // for (let i = 0; i < o.options.length; i++) {
-    //   console.log(o.options[i].value);
-    //   tagsinput.push(o.options[i].value);
-    // }
-    // var buscandoMarca = marcas.find(item => item.label === marca);
-
-    // if (typeof buscandoMarca !== 'undefined') {
-    //   // alert("Si me encuentro");
-    //   console.log(buscandoMarca);
-    // } else {
-    //   // alert("No encuentro esta marca");
-    //   console.log(buscandoMarca);
-    // }
-
-
     console.log("para la data");
     var date = $("#fechaentrega").datepicker("getDate");
     let numeroOrden = document.getElementById("numeroorden").value;
@@ -253,6 +228,16 @@
     let prenda = document.getElementById("prenda").value;
     let muestraOriginal = $('input[name=muestraoriginal]:checked').val();
     let muestraReferencia = $('input[name=muestrareferencia]:checked').val();
+    if (muestraOriginal == "true") {
+      muestraOriginal = true;
+    } else {
+      muestraOriginal = false;
+    }
+    if (muestraReferencia == "true") {
+      muestraReferencia = true;
+    } else {
+      muestraReferencia = false;
+    }
     console.log("la fecha1");
     console.log(date);
     console.log(moment.utc(date));
@@ -261,7 +246,6 @@
     var zonaLocal = moment(enUtc).local().format("DD-MM-YYYY HH:mm:ss");
     console.log("en local");
     console.log(zonaLocal);
-    // return false;
     let ordenMaquila = {
       nombreMarca: nombreMarca,
       nuevaMarca: nuevaMarca,
@@ -274,6 +258,11 @@
       fechaEntrega: enUtc,
       totalEntradas: totalEntradas
     };
+    // console.log(ordenMaquila);
+    // return false;
+    console.log("la orden ->");
+    console.log(ordenMaquila);
+    // return false;
     axios.post("crearordenmaquila", ordenMaquila).then(response => {
       console.log("la response de fuardas");
       console.log(response);
@@ -296,31 +285,6 @@
         timer: 2500
       })
     });
-    // let marca = document.getElementById("tags").value;
-    console.log(ordenMaquila);
-
-    // let idMarca = document.getElementById("idmarca").value;
-    // let marca = document.getElementById("tags").value;
-    // let numeroOrden = document.getElementById("numeroorden").value;
-    // let modelo = document.getElementById("modelo").value;
-    // let fechaCreacionOrden = document.getElementById("fechacreacion").value;
-    // let fechaEntrega = document.getElementById("fechaentrega").value;
-    // let prenda = document.getElementById("prenda").value;
-    // var tagsinput = [];
-    // let muestraOriginal = $('input[name=muestraoriginal]:checked').val();
-    // let muestraReferencia = $('input[name=muestrareferencia]:checked').val();
-
-    // var datoOrdenEntrega = {
-    //   marca: marca,
-    //   idMarca: idMarca,
-    //   numeroOrden: numeroOrden,
-    //   modelo: modelo,
-    //   fechaCreacionOrden: fechaCreacionOrden,
-    //   fechaEntrega: fechaEntrega,
-    //   prenda: prenda,
-    //   muestraReferencia: muestraReferencia,
-    //   muestraOriginal: muestraReferencia
-    // };
   }
 </script>
 <script>
@@ -332,7 +296,9 @@
 </script>
 <script>
   $("#datepicker").datepicker();
-  $("#fechaentrega").datepicker();
+  $("#fechaentrega").datepicker({
+    dateFormat: 'dd-mm-yy'
+  });
 </script>
 <script>
   $('input[name="coordinados"]').amsifySuggestags();

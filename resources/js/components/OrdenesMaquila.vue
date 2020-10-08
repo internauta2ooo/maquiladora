@@ -69,10 +69,15 @@ export default {
                     var i = 0;
                     Object.keys(response.data).map(function(key, index) {
                         i++;
-                        response.data[key].fecha_entrega = "null";
-                        console.log();
-                        console.log(response.data);
-                        console.log(index);
+                        console.log(moment(response.data[key].fecha_entrega));
+                        response.data[key].fecha_entrega = moment(
+                            response.data[key].fecha_entrega
+                        )
+                            .local()
+                            .format("DD-MM-YYYY HH:mm:ss");
+                        // console.log(moment());
+                        // console.log(response.data);
+                        // console.log(index);
                     });
                     this.items = response.data;
                     Swal.close();
