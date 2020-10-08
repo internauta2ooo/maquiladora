@@ -28,19 +28,13 @@ class OrdenController extends Controller
             $request->numeroOrden,
             $request->modelo,
             $request->prenda,
-            $request->coordinado
+            $request->coordinado,
+            $request->fechaEntrega
         );
         $filasTotalEntradas = $request->totalEntradas;
         foreach ($filasTotalEntradas as $item) {
             $cantidadOrdenesId = $objOrdenServicio->insertarCantidadOrdenes($ordenEntrega);
-            var_dump("insertando un arreglo...");
-            var_dump($item);
-            $itemKeys = array_keys($item);
-            var_dump(array_keys($item));
             foreach ($item as $key => $subItem) {
-                var_dump("insertando las tallas...");
-                var_dump($subItem);
-                var_dump("y la key..." . $key);
                 $coordinadoId = $item["coordinado"];
                 $colorId = $item["color"];
                 if ($key != "coordinado" && $key != "color") {

@@ -12,11 +12,11 @@ class OrdenServicios
         return "bye";
     }
 
-    static public function insertarOrdenMaquila($marcaId, $folio, $modelo, $prenda, $coordinado)
+    static public function insertarOrdenMaquila($marcaId, $folio, $modelo, $prenda, $coordinado, $fechaEntrega)
     {
         $id = DB::table('orden_entrega')->insertGetId([
             "marca_id" => $marcaId, "folio_id" => $folio, "modelo_id" => $modelo,
-            "prenda_id" => $prenda, "coordinado_id" => $coordinado
+            "prenda_id" => $prenda, "coordinado_id" => $coordinado, "fecha_entrega" => $fechaEntrega
         ]);
         var_dump("orden entrega 3.0");
         var_dump($id);

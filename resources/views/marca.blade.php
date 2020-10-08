@@ -1,4 +1,5 @@
 @extends('layouts.simpleapp')
+<script src="{{asset('js/app.js')}}"></script>
 <script type="text/javascript" src="{{asset('js/jquery2.js')}}"></script>
 <script type="text/javascript" src="{{asset('js/jqueryui1.js')}}"></script>
 <link rel="stylesheet" href="{{asset('css/bootstrap.min.css')}}" />
@@ -243,15 +244,24 @@
     //   console.log(buscandoMarca);
     // }
 
-    console.log("la log ++++");
-    console.log(nuevaMarca);
+
     console.log("para la data");
+    var date = $("#fechaentrega").datepicker("getDate");
     let numeroOrden = document.getElementById("numeroorden").value;
     let modelo = document.getElementById("modelo").value;
     let fechaEntrega = document.getElementById("fechaentrega").value;
     let prenda = document.getElementById("prenda").value;
     let muestraOriginal = $('input[name=muestraoriginal]:checked').val();
     let muestraReferencia = $('input[name=muestrareferencia]:checked').val();
+    console.log("la fecha1");
+    console.log(date);
+    console.log(moment.utc(date));
+    console.log(moment.utc(date).format());
+    var enUtc = moment.utc(date).toDate();
+    var zonaLocal = moment(enUtc).local().format("DD-MM-YYYY HH:mm:ss");
+    console.log("en local");
+    console.log(zonaLocal);
+    // return false;
     let ordenMaquila = {
       nombreMarca: nombreMarca,
       nuevaMarca: nuevaMarca,
@@ -261,7 +271,7 @@
       modelo: modelo,
       prenda: prenda,
       numeroOrden: numeroOrden,
-      fechaEntrega: fechaEntrega,
+      fechaEntrega: enUtc,
       totalEntradas: totalEntradas
     };
     axios.post("crearordenmaquila", ordenMaquila).then(response => {

@@ -43,13 +43,13 @@
                         <b-button size="sm" @click="row.toggleDetails"
                             >Esconder detalles</b-button
                         >
+                        <b-button size="sm" @click="row.toggleDetails"
+                            >Imprimir PDF orden</b-button
+                        >
                     </b-card>
                 </template>
             </b-table>
         </div>
-        <b-button variant="primary" @click="obtenerOrdenesMaquila()"
-            >Ya soy reactivo 2.00</b-button
-        >
     </div>
 </template>
 
@@ -66,6 +66,14 @@ export default {
                 .then(response => {
                     console.log("traemos las ordenes de entrega");
                     console.log(response.data);
+                    var i = 0;
+                    Object.keys(response.data).map(function(key, index) {
+                        i++;
+                        response.data[key].fecha_entrega = "null";
+                        console.log();
+                        console.log(response.data);
+                        console.log(index);
+                    });
                     this.items = response.data;
                     Swal.close();
                 })
