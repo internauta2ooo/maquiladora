@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Servicios\OrdenServicios;
+
 
 class OrdenController extends Controller
 {
@@ -32,6 +34,7 @@ class OrdenController extends Controller
             $request->fechaEntrega,
             $request->muestraOriginal,
             $request->muestraReferencia,
+            Auth::user()->name
         );
         $filasTotalEntradas = $request->totalEntradas;
         foreach ($filasTotalEntradas as $item) {
