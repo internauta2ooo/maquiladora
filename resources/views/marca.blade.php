@@ -305,10 +305,6 @@
 </script>
 
 <style>
-  .col-md-8 {
-    border-style: solid;
-  }
-
   #tags {
     width: 130px;
     height: 32px;
