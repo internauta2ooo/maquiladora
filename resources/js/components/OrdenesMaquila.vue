@@ -1,5 +1,17 @@
 <template>
     <div class="container">
+        <b-row align-h="center">
+            <b-col>
+                <b-button
+                    size="lg"
+                    variant="primary"
+                    class="botonesmargen"
+                    @click="crearMarca()"
+                >
+                    Crear orden</b-button
+                ></b-col
+            >
+        </b-row>
         <b-input-group size="sm">
             <b-form-input
                 v-model="filter"
@@ -111,6 +123,9 @@
 <script>
 export default {
     methods: {
+        crearMarca() {
+            window.location.href = "marca";
+        },
         onFiltered(filteredItems) {
             // Trigger pagination to update the number of buttons/pages due to filtering
             this.totalRows = filteredItems.length;
@@ -233,5 +248,9 @@ export default {
     border-style: solid;
     border-color: rgb(199, 199, 199);
     margin: 5px;
+}
+.botonesmargen {
+    margin-top: -5px;
+    margin-bottom: 15px;
 }
 </style>
