@@ -11,7 +11,7 @@ window.Vue = require('vue');
 
 import BootstrapVue from 'bootstrap-vue' //Importing
 
-Vue.use(BootstrapVue) 
+Vue.use(BootstrapVue)
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
@@ -25,6 +25,7 @@ Vue.use(BootstrapVue)
 
 
 Vue.component('ordenes-maquila', require('./components/OrdenesMaquila.vue').default);
+Vue.component('crear-orden-entrega', require('./components/CrearOrdenEntrega.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

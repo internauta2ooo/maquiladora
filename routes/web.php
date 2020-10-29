@@ -24,6 +24,7 @@ Route::get('/marca', function () {
 Route::get('/obtenermarcasauto', "OrdenController@obtenerMarcasAutocomplete")->middleware('auth');
 Route::post('/crearordenmaquila', "OrdenController@crearOrdenMaquila")->middleware('auth');
 Route::get('/ordenesmaquila', 'OrdenController@obtenerOrdenesMaquila')->middleware('auth');
+Route::get('/crearordenentrega', 'OrdenController@crearOrdenEntrega')->middleware('auth');
 Route::get('/ordenpdf', 'OrdenController@crearPdfOrdenTrabajo')->middleware('auth');
 Route::get('/obtenerordenesmaquila', 'OrdenController@obtenerOrdenesMaquilaTallas')->middleware('auth');
 

@@ -57,8 +57,53 @@ class OrdenController extends Controller
         return $request;
     }
 
-    public function crearPdfOrdenTrabajo()
+    public function crearPdfOrdenTrabajo(Request $request)
     {
+        $orden = OrdenController::obtenerOrdenMaquilaPorId($request->idOrden);
+        var_dump("la orden");
+        var_dump($orden[0]["ordenesTallas"]);
+
+
+        $encabezado = ["Coordinado", "Color"];
+        foreach ($orden[0]["ordenesTallas"] as $ordenes) {
+            $ordenes["talla_id"];
+            array_push($encabezado, $ordenes["talla_id"]);
+            $encabezado = array_unique($encabezado);
+        }
+        var_dump("El encabezado--------------------------");
+        var_dump($encabezado);
+        var_dump("************************************************");
+
+        foreach ($orden[0]["ordenesTallas"] as $keyT => $itemT) {
+
+
+            var_dump($keyT);
+            var_dump("el itemmmmm -------------------");
+            var_dump($itemT);
+
+
+            foreach ($encabezado as $key => $item) {
+                foreach ($itemT as $llaves => $valores) {
+                    var_dump("macheando con el encabezado -------------------");
+                    var_dump($key);
+                    var_dump($item);
+                    var_dump($llaves);
+                    var_dump($valores);
+
+                    if ($key == 0 && $llaves == "coordinado_id") {
+                        var_dump("el coordinado");
+                        var_dump($valores);
+                        die("s");
+                    }
+                }
+            }
+        }
+
+
+
+
+
+        die("sd");
         OrdenServicios::crearPdfOrden();
         $pdf = app("dompdf.wrapper");
         $pdf->loadHTML('<h1>Yeah.com</h1>');
@@ -71,7 +116,18 @@ class OrdenController extends Controller
         return $objOrdenes->obtenerOrdenes();
     }
 
+    static public function obtenerOrdenMaquilaPorId($ordenId)
+    {
+        $objOrdenes = new OrdenServicios();
+        return $objOrdenes->obtenerOrdenPorId($ordenId);
+    }
+
     public function obtenerOrdenesMaquila()
+    {
+        return view('ordenesmaquila');
+    }
+
+    public function crearOrdenEntrega()
     {
         return view('ordenesmaquila');
     }

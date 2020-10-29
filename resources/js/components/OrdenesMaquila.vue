@@ -43,6 +43,11 @@
                     <!-- As `row.showDetails` is one-way, we call the toggleDetails function on @change -->
                 </template>
                 <template v-slot:row-details="row">
+                    <b-modal :id="row.item.orden_entrega_id"
+                        >Hello From My Modal!{{
+                            row.item.ordenesTallas
+                        }}</b-modal
+                    >
                     <b-card>
                         <b-row class="mb-2">
                             <b-col sm="3" class="text-sm-right">
@@ -101,6 +106,12 @@
                             @click="row.toggleDetails"
                             variant="primary"
                             >Imprimir PDF orden</b-button
+                        >
+                        <b-button
+                            size="sm"
+                            @click="$bvModal.show(row.item.orden_entrega_id)"
+                            variant="primary"
+                            >Crear Orden Entrega</b-button
                         >
                     </b-card>
                 </template>
