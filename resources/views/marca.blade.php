@@ -272,7 +272,7 @@
         icon: 'success',
         title: 'Se guardo la orden correctamente',
         showConfirmButton: false,
-        timer: 2500
+        timer: 25000
       })
       window.location.href = 'ordenesmaquila';
     }).catch(error => {

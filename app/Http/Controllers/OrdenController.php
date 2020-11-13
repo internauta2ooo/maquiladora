@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Servicios\OrdenServicios;
 
-
 class OrdenController extends Controller
 {
     /**
@@ -59,64 +58,90 @@ class OrdenController extends Controller
 
     public function crearPdfOrdenTrabajo(Request $request)
     {
-        $orden = OrdenController::obtenerOrdenMaquilaPorId($request->idOrden);
-        var_dump("la orden");
-        var_dump($orden[0]["ordenesTallas"]);
+        $filasOrdenadas=OrdenController::generarOrdenPorFila($request->idOrden);
+        // var_dump("ya");
+        // var_dump($filasOrdenadas);
+        // die("s");
+        $pdf=\PDF::loadView("marcapdf", compact('filasOrdenadas'));
+        return $pdf->download("mipdf.pdf");
+    }
 
+
+    public static function generarOrdenPorFila($idOrden)
+    {
+        $orden = OrdenController::obtenerOrdenMaquilaPorId($idOrden);
+        $marca=$orden[0]["marca"];
+        $folio=$orden[0]["folio_id"];
+        $modelo=$orden[0]["modelo_id"];
+        $fechaEntrega=$orden[0]["fecha_entrega"];
+        $fechaCreacion=$orden[0]["fecha_creacion"];
+        $usuario=$orden[0]["usuario_id"];
+        $totalPiezas=$orden[0]["total_piezas"];
+        $prenda=$orden[0]["prenda_id"];
+        $muestraOriginal=$orden[0]["muestra_original"]==1?"Si":"No";
+        $muestraReferencia=$orden[0]["muestra_referencia"]==1?"Si":"No";
+
+        $datosOrden=array(  "marca"=>$marca,
+        "folio"=>$folio,
+                "modelo"=>$modelo,
+                "fecha_entrega"=>$fechaEntrega,
+                "fecha_creacion"=>$fechaCreacion,
+                "usuario"=>$usuario,
+                "total_piezas"=>$totalPiezas,
+                "prenda"=>$prenda,
+                "muestra_original"=>$muestraOriginal,
+                "muestra_referencia"=>$muestraReferencia
+                 );
+
+    
 
         $encabezado = ["Coordinado", "Color"];
+        $filasOrden=array();
         foreach ($orden[0]["ordenesTallas"] as $ordenes) {
             $ordenes["talla_id"];
             array_push($encabezado, $ordenes["talla_id"]);
             $encabezado = array_unique($encabezado);
+            array_push($filasOrden, array($ordenes["cantidad_ordenes_id"]));
         }
-        var_dump("El encabezado--------------------------");
-        var_dump($encabezado);
-        var_dump("************************************************");
-
-        foreach ($orden[0]["ordenesTallas"] as $keyT => $itemT) {
-
-
-            var_dump($keyT);
-            var_dump("el itemmmmm -------------------");
-            var_dump($itemT);
-
-
-            foreach ($encabezado as $key => $item) {
-                foreach ($itemT as $llaves => $valores) {
-                    var_dump("macheando con el encabezado -------------------");
-                    var_dump($key);
-                    var_dump($item);
-                    var_dump($llaves);
-                    var_dump($valores);
-
-                    if ($key == 0 && $llaves == "coordinado_id") {
-                        var_dump("el coordinado");
-                        var_dump($valores);
-                        die("s");
+        $filasOrden=array_unique($filasOrden, SORT_REGULAR);
+        $filasOrdenadas=array();
+        foreach ($filasOrden as $fila) {
+            $filaInsertar=array();
+            foreach ($orden[0]["ordenesTallas"] as $keyT => $itemT) {
+                if ($itemT["cantidad_ordenes_id"]==$fila[0]) {
+                    $i=0;
+                    foreach ($encabezado as $keyE=>$itemE) {
+                        $i++;
+                        foreach ($itemT as $keyI=>$itemI) {
+                            if ($itemE===$itemI) {
+                                $tempCoordinado=$itemT["coordinado_id"];
+                                $tempColor=$itemT["color_id"];
+                                
+                                array_push($filaInsertar, $itemT["cantidad_orden"]);
+                            }
+                        }
                     }
                 }
             }
+            array_unshift($filaInsertar, $tempColor);
+
+            array_unshift($filaInsertar, $tempCoordinado);
+            
+            array_push($filasOrdenadas, $filaInsertar);
         }
+        array_unshift($filasOrdenadas, $encabezado);
+        
 
 
-
-
-
-        die("sd");
-        OrdenServicios::crearPdfOrden();
-        $pdf = app("dompdf.wrapper");
-        $pdf->loadHTML('<h1>Yeah.com</h1>');
-        return $pdf->download("mipdf.pdf");
+        return array("datos_orden"=>$datosOrden,"lista"=>$filasOrdenadas);
     }
-
     public function obtenerOrdenesMaquilaTallas()
     {
         $objOrdenes = new OrdenServicios();
         return $objOrdenes->obtenerOrdenes();
     }
 
-    static public function obtenerOrdenMaquilaPorId($ordenId)
+    public static function obtenerOrdenMaquilaPorId($ordenId)
     {
         $objOrdenes = new OrdenServicios();
         return $objOrdenes->obtenerOrdenPorId($ordenId);
