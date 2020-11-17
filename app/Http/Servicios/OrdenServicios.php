@@ -3,16 +3,16 @@
 namespace App\Http\Servicios;
 
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\OrdenController;
 
 class OrdenServicios
 {
-
-    static public function crearPdfOrden()
+    public static function crearPdfOrden()
     {
         return "bye";
     }
 
-    static public function insertarOrdenMaquila(
+    public static function insertarOrdenMaquila(
         $marcaId,
         $folio,
         $modelo,
@@ -35,7 +35,7 @@ class OrdenServicios
         return $id;
     }
 
-    static public function insertarCantidadOrdenes($ordenEntregaId)
+    public static function insertarCantidadOrdenes($ordenEntregaId)
     {
         $id = DB::table('cantidad_ordenes')->insertGetId(["orden_entrega_id" => $ordenEntregaId]);
         var_dump("cantidad ordenes");
@@ -43,7 +43,7 @@ class OrdenServicios
         return $id;
     }
 
-    static public function obtenerOrdenes()
+    public static function obtenerOrdenes()
     {
         //
         //
@@ -115,10 +115,17 @@ class OrdenServicios
             $item["ordenesTallas"] = $orden;
             array_push($ordenes, $item);
         }
-        return json_encode($ordenes);
+        $ordenesCompleta=array();
+        foreach ($ordenes as $unaOrden) {
+            $ordenOrdenada=OrdenController::generarOrdenPorFila($unaOrden["orden_entrega_id"]);
+            $unaOrden["listaOrdenada"]=$ordenOrdenada["lista"];
+            array_push($ordenesCompleta, $unaOrden);
+        }
+        // var_dump();
+        return json_encode($ordenesCompleta);
     }
 
-    static public function insertarCantidadOrdenesTallas($cantidadOrdenesId, $coordinadoId, $colorId, $tallaId, $cantidadOrden, $cantidadOrdenEntregas)
+    public static function insertarCantidadOrdenesTallas($cantidadOrdenesId, $coordinadoId, $colorId, $tallaId, $cantidadOrden, $cantidadOrdenEntregas)
     {
         $id = DB::table('cantidad_ordenes_tallas')->insertGetId([
             "cantidad_ordenes_id" => $cantidadOrdenesId,
@@ -133,7 +140,7 @@ class OrdenServicios
         return $id;
     }
 
-    static public function insertarMarca($nombre, $descripcion)
+    public static function insertarMarca($nombre, $descripcion)
     {
         $id = DB::table('marca')->insertGetId(["nombre" => $nombre, "descripcion" => $descripcion]);
         var_dump("marca");
@@ -141,13 +148,13 @@ class OrdenServicios
         return $id;
     }
 
-    static public function insertaCantidadOrdenes($ordenEntregaId)
+    public static function insertaCantidadOrdenes($ordenEntregaId)
     {
         $id = DB::table('cantidad_ordenes')->insertGetId(["orden_entrega_id" => $ordenEntregaId]);
         return $id;
     }
 
-    static public function obtenerOrdenPorId($idOrden)
+    public static function obtenerOrdenPorId($idOrden)
     {
         //
         //

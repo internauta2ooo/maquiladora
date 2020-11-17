@@ -8,7 +8,7 @@
                     class="botonesmargen"
                     @click="crearMarca()"
                 >
-                    Crear orden</b-button
+                    Crear orden!2</b-button
                 ></b-col
             >
         </b-row>
@@ -53,6 +53,15 @@
                             <b-col sm="3" class="text-sm-right">
                                 <b>Entradas de la orden</b>
                             </b-col>
+                            <table>
+                                <tbody v-for="row in row.item.listaOrdenada">
+                                    <tr>
+                                        <td v-for="key in row">
+                                            {{ key }}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                             <ul id="listaordenes" style="list-style-type:none;">
                                 <li
                                     id="ordenes"
@@ -97,13 +106,17 @@
                                 <b>Total de piezas: </b>
                                 {{ row.item.total_piezas }}
                             </b-col>
+                            <b-col>
+                                <p>Run forest</p>
+                            </b-col>
                         </b-row>
+
                         <b-button size="sm" @click="row.toggleDetails"
                             >Esconder detalles</b-button
                         >
                         <b-button
                             size="sm"
-                            @click="row.toggleDetails"
+                            @click="imprimirOrden(row.item.orden_entrega_id)"
                             variant="primary"
                             >Imprimir PDF orden</b-button
                         >
@@ -138,9 +151,25 @@ export default {
             window.location.href = "marca";
         },
         onFiltered(filteredItems) {
-            // Trigger pagination to update the number of buttons/pages due to filtering
             this.totalRows = filteredItems.length;
             this.currentPage = 1;
+        },
+        imprimirOrden(ordenEntregaId) {
+            axios
+                .get("ordenpdf?idOrden=" + ordenEntregaId, {
+                    responseType: "blob"
+                })
+                .then(response => {
+                    console.log(response);
+                    let blob = new Blob([response.data], {
+                            type: "application/pdf"
+                        }),
+                        url = window.URL.createObjectURL(blob);
+                    window.open(url);
+                })
+                .catch(error => {
+                    console.log(error);
+                });
         },
         obtenerOrdenesMaquila() {
             Swal.showLoading();
