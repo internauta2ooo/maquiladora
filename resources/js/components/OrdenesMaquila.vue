@@ -8,7 +8,7 @@
                     class="botonesmargen"
                     @click="crearMarca()"
                 >
-                    Crear orden!2</b-button
+                    Crear orden</b-button
                 ></b-col
             >
         </b-row>
