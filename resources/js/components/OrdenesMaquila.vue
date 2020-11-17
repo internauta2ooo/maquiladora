@@ -106,9 +106,6 @@
                                 <b>Total de piezas: </b>
                                 {{ row.item.total_piezas }}
                             </b-col>
-                            <b-col>
-                                <p>Run forest</p>
-                            </b-col>
                         </b-row>
 
                         <b-button size="sm" @click="row.toggleDetails"
