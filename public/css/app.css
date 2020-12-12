@@ -1,7 +1,7 @@
 @import url(https://fonts.googleapis.com/css?family=Nunito);@charset "UTF-8";
 
 /*!
- * Bootstrap v4.5.2 (https://getbootstrap.com/)
+ * Bootstrap v4.5.3 (https://getbootstrap.com/)
  * Copyright 2011-2020 The Bootstrap Authors
  * Copyright 2011-2020 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
@@ -233,6 +233,7 @@ caption {
 
 th {
   text-align: inherit;
+  text-align: -webkit-match-parent;
 }
 
 label {
@@ -3939,6 +3940,8 @@ input[type=button].btn-block {
   display: block;
   min-height: 1.44rem;
   padding-left: 1.5rem;
+  -webkit-print-color-adjust: exact;
+          color-adjust: exact;
 }
 
 .custom-control-inline {
@@ -5518,6 +5521,7 @@ a.badge-dark.focus {
   position: absolute;
   top: 0;
   right: 0;
+  z-index: 2;
   padding: 0.75rem 1.25rem;
   color: inherit;
 }
@@ -10914,7 +10918,7 @@ a.text-dark:focus {
 
 .text-break {
   word-break: break-word !important;
-  overflow-wrap: break-word !important;
+  word-wrap: break-word !important;
 }
 
 .text-reset {
@@ -11028,7 +11032,7 @@ a.text-dark:focus {
 }
 
 /*!
- * Bootstrap v4.5.2 (https://getbootstrap.com/)
+ * Bootstrap v4.5.3 (https://getbootstrap.com/)
  * Copyright 2011-2020 The Bootstrap Authors
  * Copyright 2011-2020 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
@@ -11260,6 +11264,7 @@ caption {
 
 th {
   text-align: inherit;
+  text-align: -webkit-match-parent;
 }
 
 label {
@@ -14966,6 +14971,8 @@ input[type=button].btn-block {
   display: block;
   min-height: 1.44rem;
   padding-left: 1.5rem;
+  -webkit-print-color-adjust: exact;
+          color-adjust: exact;
 }
 
 .custom-control-inline {
@@ -16545,6 +16552,7 @@ a.badge-dark.focus {
   position: absolute;
   top: 0;
   right: 0;
+  z-index: 2;
   padding: 0.75rem 1.25rem;
   color: inherit;
 }
@@ -21930,7 +21938,7 @@ a.text-dark:focus {
 
 .text-break {
   word-break: break-word !important;
-  overflow-wrap: break-word !important;
+  word-wrap: break-word !important;
 }
 
 .text-reset {
@@ -22188,6 +22196,7 @@ a.text-dark:focus {
   align-items: center;
   justify-content: center;
   vertical-align: middle;
+  flex-shrink: 0;
   width: 2.5rem;
   height: 2.5rem;
   font-size: inherit;
@@ -22280,7 +22289,7 @@ a.text-dark:focus {
   border-radius: 10em;
   font-size: 70%;
   font-weight: 700;
-  z-index: 5;
+  z-index: 1;
 }
 
 .b-avatar-sm {
@@ -22320,7 +22329,7 @@ a.text-dark:focus {
 
 .b-avatar-group a.b-avatar:hover:not(.disabled):not(disabled),
 .b-avatar-group .btn.b-avatar:hover:not(.disabled):not(disabled) {
-  z-index: 3;
+  z-index: 1;
 }
 
 .b-calendar {
@@ -23144,6 +23153,16 @@ input[type=color].form-control:disabled {
   line-height: 1.5;
 }
 
+.media-aside {
+  display: flex;
+  margin-right: 1rem;
+}
+
+.media-aside-right {
+  margin-right: 0;
+  margin-left: 1rem;
+}
+
 .modal-backdrop {
   opacity: 0.5;
 }
@@ -23661,6 +23680,8 @@ input[type=color].form-control:disabled {
   overflow: hidden;
   background-color: rgba(0, 0, 0, 0.12);
   cursor: wait;
+  -webkit-mask-image: radial-gradient(white, black);
+          mask-image: radial-gradient(white, black);
 }
 
 .b-skeleton::before {
