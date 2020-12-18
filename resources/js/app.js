@@ -27,6 +27,8 @@ Vue.use(BootstrapVue)
 Vue.component('ordenes-maquila', require('./components/OrdenesMaquila.vue').default);
 Vue.component('crear-orden-entrega', require('./components/CrearOrdenEntrega.vue').default);
 
+// Vue.component('crear-orden-entrega-modal', require('./components/CrearOrdenEntregaModal.vue').default);
+
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application

@@ -25,7 +25,11 @@ Route::get('/obtenermarcasauto', "OrdenController@obtenerMarcasAutocomplete")->m
 Route::post('/crearordenmaquila', "OrdenController@crearOrdenMaquila")->middleware('auth');
 Route::get('/ordenesmaquila', 'OrdenController@obtenerOrdenesMaquila')->middleware('auth');
 Route::get('/crearordenentrega', 'OrdenController@crearOrdenEntrega')->middleware('auth');
+//Obtiene la orden en formato PDF
 Route::get('/ordenpdf', 'OrdenController@crearPdfOrdenTrabajo')->middleware('auth');
+//Obtiene la lista de las ordenes de maquila
 Route::get('/obtenerordenesmaquila', 'OrdenController@obtenerOrdenesMaquilaTallas')->middleware('auth');
+//Obtenemos la orden de articulos por entregar...
+Route::get('/obtenerordenesparaentregar', 'OrdenController@obtenerOrdenesMaquilaParaEntregar');
 
 Auth::routes();

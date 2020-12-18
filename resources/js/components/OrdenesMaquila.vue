@@ -121,7 +121,7 @@
                             size="sm"
                             @click="$bvModal.show(row.item.orden_entrega_id)"
                             variant="primary"
-                            >Crear Orden Entrega</b-button
+                            >Crear Orden Entrega</b-button 
                         >
                     </b-card>
                 </template>

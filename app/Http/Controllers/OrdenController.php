@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Servicios\OrdenServicios;
+use Countable;
+use Flugg\Responder\Responder;
 
 class OrdenController extends Controller
 {
@@ -58,65 +60,142 @@ class OrdenController extends Controller
 
     public function crearPdfOrdenTrabajo(Request $request)
     {
-        $filasOrdenadas=OrdenController::generarOrdenPorFila($request->idOrden);
-        // var_dump("ya");
-        // var_dump($filasOrdenadas);
-        // die("s");
-        $pdf=\PDF::loadView("marcapdf", compact('filasOrdenadas'));
+        $filasOrdenadas = OrdenController::generarOrdenPorFila($request->idOrden);
+        $pdf = \PDF::loadView("marcapdf", compact('filasOrdenadas'));
         return $pdf->download("mipdf.pdf");
     }
 
 
-    public static function generarOrdenPorFila($idOrden)
+    public static function generarOrdenPorFilaExistencia($idOrden)
     {
         $orden = OrdenController::obtenerOrdenMaquilaPorId($idOrden);
-        $marca=$orden[0]["marca"];
-        $folio=$orden[0]["folio_id"];
-        $modelo=$orden[0]["modelo_id"];
-        $fechaEntrega=$orden[0]["fecha_entrega"];
-        $fechaCreacion=$orden[0]["fecha_creacion"];
-        $usuario=$orden[0]["usuario_id"];
-        $totalPiezas=$orden[0]["total_piezas"];
-        $prenda=$orden[0]["prenda_id"];
-        $muestraOriginal=$orden[0]["muestra_original"]==1?"Si":"No";
-        $muestraReferencia=$orden[0]["muestra_referencia"]==1?"Si":"No";
+        $marca = $orden[0]["marca"];
+        $folio = $orden[0]["folio_id"];
+        $modelo = $orden[0]["modelo_id"];
+        $fechaEntrega = $orden[0]["fecha_entrega"];
+        $fechaCreacion = $orden[0]["fecha_creacion"];
+        $usuario = $orden[0]["usuario_id"];
+        $totalPiezas = $orden[0]["total_piezas"];
+        $prenda = $orden[0]["prenda_id"];
+        $muestraOriginal = $orden[0]["muestra_original"] == 1 ? "Si" : "No";
+        $muestraReferencia = $orden[0]["muestra_referencia"] == 1 ? "Si" : "No";
 
-        $datosOrden=array(  "marca"=>$marca,
-        "folio"=>$folio,
-                "modelo"=>$modelo,
-                "fecha_entrega"=>$fechaEntrega,
-                "fecha_creacion"=>$fechaCreacion,
-                "usuario"=>$usuario,
-                "total_piezas"=>$totalPiezas,
-                "prenda"=>$prenda,
-                "muestra_original"=>$muestraOriginal,
-                "muestra_referencia"=>$muestraReferencia
-                 );
+        $datosOrden = array(
+            "marca" => $marca,
+            "folio" => $folio,
+            "modelo" => $modelo,
+            "fecha_entrega" => $fechaEntrega,
+            "fecha_creacion" => $fechaCreacion,
+            "usuario" => $usuario,
+            "total_piezas" => $totalPiezas,
+            "prenda" => $prenda,
+            "muestra_original" => $muestraOriginal,
+            "muestra_referencia" => $muestraReferencia
+        );
 
-    
+
 
         $encabezado = ["Coordinado", "Color"];
-        $filasOrden=array();
+        $filasOrden = array();
         foreach ($orden[0]["ordenesTallas"] as $ordenes) {
             $ordenes["talla_id"];
             array_push($encabezado, $ordenes["talla_id"]);
             $encabezado = array_unique($encabezado);
             array_push($filasOrden, array($ordenes["cantidad_ordenes_id"]));
         }
-        $filasOrden=array_unique($filasOrden, SORT_REGULAR);
-        $filasOrdenadas=array();
+        $filasOrden = array_unique($filasOrden, SORT_REGULAR);
+        $filasOrdenadas = array();
         foreach ($filasOrden as $fila) {
-            $filaInsertar=array();
+            $filaInsertar = array();
+            $filaInsertarCantidades = array();
             foreach ($orden[0]["ordenesTallas"] as $keyT => $itemT) {
-                if ($itemT["cantidad_ordenes_id"]==$fila[0]) {
-                    $i=0;
-                    foreach ($encabezado as $keyE=>$itemE) {
+                // var_dump($itemT);
+                if ($itemT["cantidad_ordenes_id"] == $fila[0]) {
+                    $i = 0;
+                    foreach ($encabezado as $keyE => $itemE) {
                         $i++;
-                        foreach ($itemT as $keyI=>$itemI) {
-                            if ($itemE===$itemI) {
-                                $tempCoordinado=$itemT["coordinado_id"];
-                                $tempColor=$itemT["color_id"];
-                                
+                        foreach ($itemT as $keyI => $itemI) {
+                            if ($itemE === $itemI) {
+                                $tempCoordinado = $itemT["coordinado_id"];
+                                $tempColor = $itemT["color_id"];
+                                // ["cantidad_ordenes_tallas_id"]
+                                // $tempCoordinado = 12;
+                                // $tempColor = 12;
+                                array_push($filaInsertarCantidades, $itemT["cantidad_orden"]);
+                                array_push($filaInsertar, $itemT["cantidad_ordenes_tallas_id"]);
+                                // array_push($filasInsertar, $filaInsertarCantidades);
+                            }
+                        }
+                    }
+                }
+            }
+            // var_dump($filaInsertar);
+            // var_dump($filaInsertarCantidades);
+
+            array_unshift($filaInsertar, $tempColor);
+            array_unshift($filaInsertar, $tempCoordinado);
+            //Las cantidades
+            // array_push($filaInsertar, $filaInsertarCantidades);
+            array_push($filasOrdenadas, $filaInsertar);
+        }
+        array_unshift($filasOrdenadas, $encabezado);
+
+
+
+        return array("datos_orden" => $datosOrden, "lista" => $filasOrdenadas);
+    }
+
+    public static function generarOrdenPorFila($idOrden)
+    {
+        $orden = OrdenController::obtenerOrdenMaquilaPorId($idOrden);
+        $marca = $orden[0]["marca"];
+        $folio = $orden[0]["folio_id"];
+        $modelo = $orden[0]["modelo_id"];
+        $fechaEntrega = $orden[0]["fecha_entrega"];
+        $fechaCreacion = $orden[0]["fecha_creacion"];
+        $usuario = $orden[0]["usuario_id"];
+        $totalPiezas = $orden[0]["total_piezas"];
+        $prenda = $orden[0]["prenda_id"];
+        $muestraOriginal = $orden[0]["muestra_original"] == 1 ? "Si" : "No";
+        $muestraReferencia = $orden[0]["muestra_referencia"] == 1 ? "Si" : "No";
+
+        $datosOrden = array(
+            "marca" => $marca,
+            "folio" => $folio,
+            "modelo" => $modelo,
+            "fecha_entrega" => $fechaEntrega,
+            "fecha_creacion" => $fechaCreacion,
+            "usuario" => $usuario,
+            "total_piezas" => $totalPiezas,
+            "prenda" => $prenda,
+            "muestra_original" => $muestraOriginal,
+            "muestra_referencia" => $muestraReferencia
+        );
+
+
+
+        $encabezado = ["Coordinado", "Color"];
+        $filasOrden = array();
+        foreach ($orden[0]["ordenesTallas"] as $ordenes) {
+            $ordenes["talla_id"];
+            array_push($encabezado, $ordenes["talla_id"]);
+            $encabezado = array_unique($encabezado);
+            array_push($filasOrden, array($ordenes["cantidad_ordenes_id"]));
+        }
+        $filasOrden = array_unique($filasOrden, SORT_REGULAR);
+        $filasOrdenadas = array();
+        foreach ($filasOrden as $fila) {
+            $filaInsertar = array();
+            foreach ($orden[0]["ordenesTallas"] as $keyT => $itemT) {
+                if ($itemT["cantidad_ordenes_id"] == $fila[0]) {
+                    $i = 0;
+                    foreach ($encabezado as $keyE => $itemE) {
+                        $i++;
+                        foreach ($itemT as $keyI => $itemI) {
+                            if ($itemE === $itemI) {
+                                $tempCoordinado = $itemT["coordinado_id"];
+                                $tempColor = $itemT["color_id"];
+
                                 array_push($filaInsertar, $itemT["cantidad_orden"]);
                             }
                         }
@@ -126,19 +205,31 @@ class OrdenController extends Controller
             array_unshift($filaInsertar, $tempColor);
 
             array_unshift($filaInsertar, $tempCoordinado);
-            
+
             array_push($filasOrdenadas, $filaInsertar);
         }
         array_unshift($filasOrdenadas, $encabezado);
-        
 
 
-        return array("datos_orden"=>$datosOrden,"lista"=>$filasOrdenadas);
+
+        return array("datos_orden" => $datosOrden, "lista" => $filasOrdenadas);
     }
     public function obtenerOrdenesMaquilaTallas()
     {
         $objOrdenes = new OrdenServicios();
         return $objOrdenes->obtenerOrdenes();
+    }
+    //Metodo Para obtener las ordenes que podemos entregar
+    public function obtenerOrdenesMaquilaParaEntregar(Request $request)
+    {
+        $objOrdenes = new OrdenServicios();
+        $respuesta = $objOrdenes->obtenerOrdenesParaEntregar($request->idOrden);
+        $haylista = count($respuesta);
+        if ($haylista > 0) {
+            return responder()->success($respuesta)->respond(200, ["header" => 2, "Content-type" => "application/json; charset=utf-8", 'Charset' => 'utf-8']);
+        } else {
+            return responder()->error("400", "No hay información")->respond(400, ["Content-type" => "application/json; charset=utf-8", 'Charset' => 'utf-8']);
+        }
     }
 
     public static function obtenerOrdenMaquilaPorId($ordenId)
