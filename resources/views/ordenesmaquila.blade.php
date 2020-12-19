@@ -8,6 +8,7 @@
             <div id="app" class="content">
                 <!--Añadimos nuestro componente vuejs-->
                 <ordenes-maquila></ordenes-maquila>
+                <crear-orden-entrega></crear-orden-entrega>
 
             </div>
         </div>

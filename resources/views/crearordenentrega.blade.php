@@ -7,6 +7,7 @@
         <div class="col-md-12">
             <div id="app" class="content">
                 <!--Añadimos nuestro componente vuejs-->
+                <p>lolito20</p>
                 <crear-orden-entrega></crear-orden-entrega>
 
             </div>

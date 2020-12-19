@@ -119,9 +119,9 @@
                         >
                         <b-button
                             size="sm"
-                            @click="$bvModal.show(row.item.orden_entrega_id)"
+                            @click="crearOrdenEntrega()"
                             variant="primary"
-                            >Crear Orden Entrega</b-button 
+                            >Crear Orden Entrega2</b-button 
                         >
                     </b-card>
                 </template>
@@ -144,6 +144,7 @@
 <script>
 export default {
     methods: {
+        
         crearMarca() {
             window.location.href = "marca";
         },
@@ -167,6 +168,10 @@ export default {
                 .catch(error => {
                     console.log(error);
                 });
+        },
+        crearOrdenentrega(){
+            // this.$emit('input',this.idOrdenParaEntregar)
+            alert("rubidem");
         },
         obtenerOrdenesMaquila() {
             Swal.showLoading();
@@ -207,6 +212,7 @@ export default {
     },
     data() {
         return {
+            idOrdenParaEntregar:11,
             fields: [
                 { key: "folio_id", label: "Numero de Orden" },
                 { key: "modelo_id", label: "Modelo" },

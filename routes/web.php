@@ -21,10 +21,14 @@ Route::get('/marca', function () {
     return view('marca');
 })->middleware('auth');
 
+Route::get('/crearordenentrega', function () {
+    return view('crearordenentrega');
+})->middleware('auth');
+
 Route::get('/obtenermarcasauto', "OrdenController@obtenerMarcasAutocomplete")->middleware('auth');
 Route::post('/crearordenmaquila', "OrdenController@crearOrdenMaquila")->middleware('auth');
 Route::get('/ordenesmaquila', 'OrdenController@obtenerOrdenesMaquila')->middleware('auth');
-Route::get('/crearordenentrega', 'OrdenController@crearOrdenEntrega')->middleware('auth');
+// Route::get('/crearordenentrega', 'OrdenController@crearOrdenEntrega')->middleware('auth');
 //Obtiene la orden en formato PDF
 Route::get('/ordenpdf', 'OrdenController@crearPdfOrdenTrabajo')->middleware('auth');
 //Obtiene la lista de las ordenes de maquila
