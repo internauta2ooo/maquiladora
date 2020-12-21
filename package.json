@@ -26,6 +26,7 @@
     "dependencies": {
         "bootstrap-vue": "^2.20.1",
         "moment": "^2.29.1",
-        "object-path": "^0.11.5"
+        "object-path": "^0.11.5",
+        "sweetalert2": "^10.12.5"
     }
 }

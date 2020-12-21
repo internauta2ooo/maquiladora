@@ -119,9 +119,9 @@
                         >
                         <b-button
                             size="sm"
-                            @click="crearOrdenEntrega()"
+                            @click="crearOrdenEntrega(row.item.orden_entrega_id)"
                             variant="primary"
-                            >Crear Orden Entrega2</b-button 
+                            >Crear Orden Entrega</b-button 
                         >
                     </b-card>
                 </template>
@@ -138,13 +138,22 @@
                     class="my-0"
                 ></b-pagination> </b-col
         ></b-row>
+        <CrearOrdenEntrega :idOrdenMaquila="idOrdenParaEntregar" />
+        <b-form-input v-model="idOrdenParaEntregar"></b-form-input>
     </div>
 </template>
 
 <script>
+import Swal from 'sweetalert2'
+import CrearOrdenEntrega from "./CrearOrdenEntrega.vue";
 export default {
-    methods: {
-        
+    components:{
+        CrearOrdenEntrega
+    },
+    methods: {    
+        // updateMessage(variable){
+        //     this.idOrdenParaEntregar=variable;
+        // },    
         crearMarca() {
             window.location.href = "marca";
         },
@@ -168,10 +177,21 @@ export default {
                 .catch(error => {
                     console.log(error);
                 });
-        },
-        crearOrdenentrega(){
-            // this.$emit('input',this.idOrdenParaEntregar)
-            alert("rubidem");
+        },        
+        crearOrdenEntrega(orden_entrega_id){
+            axios.get("obtenerordenesparaentregar?idOrden="+orden_entrega_id).then(response=>{
+                console.log("la response");
+                console.log(response);
+                this.idOrdenParaEntregar=response.data.data;         
+                this.$bvModal.show('crearorden');
+            }).catch(()=>{
+                console.log("no hay ordenes");
+                Swal.fire({
+                    icon:"error",
+                    text:"No hay información para esta orden...",
+                });
+            });
+            
         },
         obtenerOrdenesMaquila() {
             Swal.showLoading();
@@ -270,7 +290,7 @@ export default {
             filter: null,
             filterOn: [],
             currentPage: 1,
-            perPage: 50
+            perPage: 10
         };
     },
     created: function() {

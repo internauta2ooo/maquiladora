@@ -227,6 +227,16 @@ class OrdenServicios
         return $id;
     }
 
+    public static function obtenerNumeroTallas($ordenTalla)
+    {
+        $talla = DB::table("cantidad_ordenes_tallas")->select("*")
+            ->where("cantidad_ordenes_tallas_id", "=", $ordenTalla)
+            ->get();
+        // $arr = collect($talla);
+        // var_dump($talla);
+        return json_decode(json_encode($talla), true);;
+    }
+
     public static function insertarMarca($nombre, $descripcion)
     {
         $id = DB::table('marca')->insertGetId(["nombre" => $nombre, "descripcion" => $descripcion]);

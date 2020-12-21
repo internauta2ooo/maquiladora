@@ -214,6 +214,18 @@ class OrdenController extends Controller
 
         return array("datos_orden" => $datosOrden, "lista" => $filasOrdenadas);
     }
+    public function obtenerNumeroTallas(Request $request)
+    {
+        $objOrdenes = new OrdenServicios();
+        $respuesta = $objOrdenes->obtenerNumeroTallas($request->ordenTalla);
+        $hayLista = count($respuesta);
+        if ($hayLista > 0) {
+
+            return responder()->success($respuesta[0])->respond(200, ["header" => 2, "Content-type" => "application/json; charset=utf-8", 'Charset' => 'utf-8']);
+        } else {
+            return responder()->error("400", "No hay información")->respond(400, ["Content-type" => "application/json; charset=utf-8", 'Charset' => 'utf-8']);
+        }
+    }
     public function obtenerOrdenesMaquilaTallas()
     {
         $objOrdenes = new OrdenServicios();

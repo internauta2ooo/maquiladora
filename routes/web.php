@@ -35,5 +35,7 @@ Route::get('/ordenpdf', 'OrdenController@crearPdfOrdenTrabajo')->middleware('aut
 Route::get('/obtenerordenesmaquila', 'OrdenController@obtenerOrdenesMaquilaTallas')->middleware('auth');
 //Obtenemos la orden de articulos por entregar...
 Route::get('/obtenerordenesparaentregar', 'OrdenController@obtenerOrdenesMaquilaParaEntregar');
+//Obtenemos si se puede entregar el numero de piezas...
+Route::get('/obtenernumerotallas', 'OrdenController@obtenerNumeroTallas');
 
 Auth::routes();
