@@ -53,20 +53,92 @@ export default {
   props: ["idOrdenMaquila"],
   methods: {
     validarCantidadPorEntregar(idOrdenTalla, value) {
-      console.log("RUN2");
-      console.log(this.$refs[value]);
+      Swal.fire({
+        title: "Validando, espere...",
+        showConfirmButton: false,
+        onBeforeOpen() {
+          Swal.showLoading();
+        },
+        onAfterColes() {},
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        allowEnterKey: false,
+      });
       axios
         .get("obtenernumerotallas?ordenTalla=" + idOrdenTalla)
         .then((response) => {
           console.log(response.data.data);
-          console.log("aaas1");
+          console.log(response.data.data.cantidad_orden);
+          console.log(response.data.data.cantidad_orden_entregadas);
+          console.log("Lo que puedo entregar223 1xx...");
+          console.log(this.$refs[value]);
+          console.log(this.$refs[value][0]);
+          console.log(this.$refs[value][0]._data.localValue);
+          let totalPorEntregar = 0;
+          let icono = "";
+          let texto = "";
+          if (
+            response.data.data.cantidad_orden ==
+            response.data.data.cantidad_orden_entregadas
+          ) {
+            //Ya entregaste todo
+            icono = "success";
+            texto = "Ya entregaste todo el material";
+            totalPorEntregar = 0;
+            console.log("Todo entregado");
+          } else if (
+            response.data.data.cantidad_orden >
+            response.data.data.cantidad_orden_entregadas
+          ) {
+            icono = "success";
+            texto = "Puedes entregar esta cantidad de material";
+            let maximasPorEntregar =
+              response.data.data.cantidad_orden -
+              response.data.data.cantidad_orden_entregadas;
+            if (this.$refs[value][0]._data.localValue > maximasPorEntregar) {
+              this.$refs[value][0]._data.localValue = maximasPorEntregar;
+              texto = "Lo maximo que puedes entregar es: " + maximasPorEntregar;
+            }
+            totalPorEntregar = this.$refs[value][0]._data.localValue;
+            console.log("Valido");
+          } else if (
+            response.data.data.cantidad_orden <
+            response.data.data.cantidad_orden_entregadas
+          ) {
+            icono = "error";
+            texto = "Te excediste en la entrega de material, se reacomodara";
+            totalPorEntregar =
+              response.data.data.cantidad_orden -
+              response.data.data.cantidad_orden_entregadas;
+            totalPorEntregar = 0;
+            console.log("Te excedes! 778++52558");
+          }
+          this.$refs[value][0]._data.localValue = totalPorEntregar;
+          console.log("Lo que puedo entregar");
+          console.log(totalPorEntregar);
+          console.log("Lo que puedo entregar");
+          console.log(this.$refs[value][0].value);
           Swal.fire({
-            icon: "success",
-            text: "Puedes entregar la cantidad",
+            icon: icono,
+            text: texto,
+            showConfirmButton: true,
+            timer: 2000,
+          }).then(() => {
+            Swal.close;
           });
         })
         .catch((error) => {
           console.log("el error");
+          console.log(error);
+          Swal.close;
+          Swal.fire({
+            icon: "error",
+            text: "Hubo un error...",
+            showConfirmButton: false,
+            timer: 2500,
+          }).then(() => {
+            Swal.close;
+          });
         });
     },
     crearOrdenEntrega() {
