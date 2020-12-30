@@ -2,16 +2,21 @@
     "private": true,
     "scripts": {
         "dev": "npm run development",
+        "devi": "cross-env NODE_ENV=development webpack --progress --hide-modules",
         "development": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
         "watch": "npm run development -- --watch",
         "watch-poll": "npm run watch -- --watch-poll",
         "hot": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --disable-host-check --config=node_modules/laravel-mix/setup/webpack.config.js",
         "prod": "npm run production",
-        "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
+        "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
+        "start": "webpack-dev-server --mode development --open",
+        "serv": "webpack-dev-server --progress --config=node_modules/laravel-mix/setup/webpack.config.js"
     },
     "devDependencies": {
         "axios": "^0.19.2",
         "bootstrap": "^4.5.3",
+        "browser-sync": "^2.26.13",
+        "browser-sync-webpack-plugin": "^2.3.0",
         "cross-env": "^7.0.3",
         "jquery": "^3.2",
         "laravel-mix": "^5.0.9",
@@ -21,12 +26,16 @@
         "sass": "^1.30.0",
         "sass-loader": "^8.0.0",
         "vue": "^2.5.17",
-        "vue-template-compiler": "^2.6.12"
+        "vue-template-compiler": "^2.6.12",
+        "webpack-dev-server": "^3.11.1"
     },
     "dependencies": {
         "bootstrap-vue": "^2.20.1",
         "moment": "^2.29.1",
         "object-path": "^0.11.5",
-        "sweetalert2": "^10.12.5"
+        "signature_pad": "^3.0.0-beta.4",
+        "sweetalert2": "^10.12.5",
+        "vue-loader": "^15.9.6",
+        "vue-signature-pad": "^2.0.2"
     }
 }

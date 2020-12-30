@@ -1,57 +1,172 @@
 <template>
   <div class="container">
-    <p>slpslsls 2.000</p>
     <b-modal id="crearorden" size="xl">
-      <div>Mensaje:{{ idOrdenMaquila[0].orden_entrega_id }}</div>
-      <table>
-        <tbody>
-          <template v-for="(asFor, index) in idOrdenMaquila[0].listaOrdenada">
-            <tr class="filasinput" :key="asFor">
-              <template v-for="(asForColumna, indexColumna) in asFor">
-                <div :key="asForColumna" v-if="index == 0">
-                  <b-form-input
-                    :id="asForColumna"
-                    :value="asForColumna"
-                    @change="validarCantidadPorEntregar(asForColumna, $event)"
-                    disabled="true"
-                  ></b-form-input>
-                </div>
-                <div
-                  :key="asForColumna"
-                  v-else-if="indexColumna == 0 || indexColumna == 1"
-                >
-                  <b-form-input
-                    :id="asForColumna"
-                    :value="asForColumna"
-                    @change="validarCantidadPorEntregar(asForColumna, $event)"
-                    disabled="true"
-                  ></b-form-input>
-                </div>
-                <div v-else :key="asForColumna">
-                  <b-form-input
-                    :id="asForColumna"
-                    :ref="asForColumna"
-                    :value="0"
-                    @change="
-                      validarCantidadPorEntregar(asForColumna, asForColumna)
-                    "
-                  ></b-form-input>
-                </div>
+      <b-row>
+        <b-col>
+          <table
+            id="tablaParaEntregar"
+            ref="tablaParaEntregar"
+            v-show="!firmarYa"
+          >
+            <tbody>
+              <template
+                v-for="(asFor, index) in idOrdenMaquila[0].listaOrdenada"
+              >
+                <tr class="filasinput" :key="asFor">
+                  <template v-for="(asForColumna, indexColumna) in asFor">
+                    <div :key="asForColumna" v-if="index == 0">
+                      <b-form-input
+                        :id="asForColumna"
+                        :value="asForColumna"
+                        :ref="asForColumna"
+                        @change="
+                          validarCantidadPorEntregar(asForColumna, $event)
+                        "
+                        disabled="true"
+                      ></b-form-input>
+                    </div>
+                    <div
+                      :key="asForColumna"
+                      v-else-if="indexColumna == 0 || indexColumna == 1"
+                    >
+                      <b-form-input
+                        :id="asForColumna"
+                        :value="asForColumna"
+                        :ref="asForColumna"
+                        @change="
+                          validarCantidadPorEntregar(asForColumna, $event)
+                        "
+                        disabled="true"
+                      ></b-form-input>
+                    </div>
+                    <div v-else :key="asForColumna">
+                      <b-form-input
+                        :id="asForColumna"
+                        :ref="asForColumna"
+                        :value="0"
+                        @change="
+                          validarCantidadPorEntregar(asForColumna, asForColumna)
+                        "
+                      ></b-form-input>
+                    </div>
+                  </template>
+                </tr>
               </template>
-            </tr>
-          </template>
-        </tbody>
-      </table>
+            </tbody>
+          </table>
+        </b-col>
+      </b-row>
+
+      <b-row class="text-center">
+        <b-col>
+          <b-button
+            v-show="!firmarYa"
+            size="sm"
+            variant="primary"
+            class="botonesmargen"
+            @click="avanzarFirma(firmarYa)"
+          >
+            Pasar a firmar la orden
+          </b-button>
+          <b-button
+            v-show="firmarYa"
+            size="sm"
+            variant="primary"
+            class="botonesmargen"
+            @click="avanzarFirma(firmarYa)"
+          >
+            Cambiar cantidades a entregar
+          </b-button>
+        </b-col>
+      </b-row>
+      <b-row class="text-center">
+        <VueSignaturePad
+          v-show="firmarYa"
+          style="display: none"
+          id="signature"
+          width="100%"
+          height="300px"
+          ref="signaturePad"
+          :options="{
+            onBegin: () => {
+              $refs.signaturePad.resizeCanvas();
+            },
+          }"
+        />
+      </b-row>
+      <b-row class="text-center">
+        <b-col>
+          <b-button
+            v-show="firmarYa"
+            size="sm"
+            variant="primary"
+            class="botonesmargen"
+            @click="undo"
+            >Limpiar</b-button
+          >
+        </b-col>
+      </b-row>
+      <template #modal-footer="{ ok, cancel, hide }">
+        <b-button size="sm" variant="danger" @click="cancel()">
+          Cancelar
+        </b-button>
+        <b-button size="sm" variant="success" @click="guardarOrdenEntrega()">
+          Guardad orden de entrega</b-button
+        >
+      </template>
     </b-modal>
   </div>
 </template>
 
 <script>
 import Swal from "sweetalert2";
+import Vue from "vue";
+import VueSignaturePad from "vue-signature-pad";
+
+Vue.use(VueSignaturePad);
 export default {
   name: "crearOrdenEntrega",
-  props: ["idOrdenMaquila"],
+  props: ["idOrdenMaquila", "reiniciarFirmas"],
+  created: function () {
+    console.log("se creo el componente orden de entrega...");
+  },
   methods: {
+    guardarOrdenEntrega() {
+      Swal.fire({
+        icon: "success",
+        text: "Se guardo la orden de entrega correctamente...",
+        showConfirmButton: true,
+        timer: 2000,
+      }).then(() => {
+        this.$bvModal.hide("crearorden");
+      });
+    },
+    avanzarFirma(firmarYa) {
+      this.firmarYa = !this.firmarYa;
+      let filas = document.getElementById("tablaParaEntregar").rows.length;
+      for (let index = 1; index < filas; index++) {
+        let columnas = document
+          .getElementById("tablaParaEntregar")
+          .rows[index].getElementsByTagName("div").length;
+        for (let indexColumna = 2; indexColumna < columnas; indexColumna++) {
+          console.log("el value 2.0");
+          let refss = document
+            .getElementById("tablaParaEntregar")
+            .rows[index].getElementsByTagName("div")
+            [indexColumna].getElementsByTagName("input")[0].id;
+          console.log(this.$refs[refss][0].$refs.input.value);
+        }
+      }
+    },
+    undo() {
+      this.$refs.signaturePad.undoSignature();
+    },
+    save() {
+      const { isEmpty, data } = this.$refs.signaturePad.saveSignature();
+      console.log("save image");
+      console.log(isEmpty);
+      console.log(data);
+    },
     validarCantidadPorEntregar(idOrdenTalla, value) {
       Swal.fire({
         title: "Validando, espere...",
@@ -67,10 +182,10 @@ export default {
       axios
         .get("obtenernumerotallas?ordenTalla=" + idOrdenTalla)
         .then((response) => {
+          console.log("Validando la cantidad de entrega...");
           console.log(response.data.data);
           console.log(response.data.data.cantidad_orden);
           console.log(response.data.data.cantidad_orden_entregadas);
-          console.log("Lo que puedo entregar223 1xx...");
           console.log(this.$refs[value]);
           console.log(this.$refs[value][0]);
           console.log(this.$refs[value][0]._data.localValue);
@@ -111,13 +226,10 @@ export default {
               response.data.data.cantidad_orden -
               response.data.data.cantidad_orden_entregadas;
             totalPorEntregar = 0;
-            console.log("Te excedes! 778++52558");
+            console.log("Te excedes...");
           }
           this.$refs[value][0]._data.localValue = totalPorEntregar;
-          console.log("Lo que puedo entregar");
-          console.log(totalPorEntregar);
-          console.log("Lo que puedo entregar");
-          console.log(this.$refs[value][0].value);
+          console.log("Lo que puedo entregar...");
           Swal.fire({
             icon: icono,
             text: texto,
@@ -135,7 +247,7 @@ export default {
             icon: "error",
             text: "Hubo un error...",
             showConfirmButton: false,
-            timer: 2500,
+            timer: 2000,
           }).then(() => {
             Swal.close;
           });
@@ -143,25 +255,30 @@ export default {
     },
     crearOrdenEntrega() {
       this.$emit("sendData", this.idOrdenParaEntregar);
-      console.log("ssksskk11");
+      console.log("Crear orden entrega...");
       console.log(this.idOrdenMaquila);
-      console.log("ssksskk111");
     },
   },
   data() {
-    return {};
+    return {
+      firmarYa: 1,
+    };
   },
   created: function () {
-    console.log("Component created.");
+    console.log("Component created crearordenentrega....");
     console.log(this.idOrdenMaquila);
   },
   mounted() {
-    console.log("Component mounted.");
+    console.log("Component mounted crear orden.");
     console.log(this.idOrdenMaquila);
+    this.$root.$on("component1", () => {
+      this.firmarYa = this.reiniciarFirmas;
+      console.log(this.firmarYa);
+    });
   },
 };
 </script>
-<style scoped>
+<style>
 .filasinput {
   display: flex;
 }
@@ -170,8 +287,16 @@ export default {
   border-color: rgb(199, 199, 199);
   margin: 5px;
 }
+</style>
+<style scoped>
+@media (min-width: 992px) {
+  .modal-dialog >>> .modal-lg,
+  .modal-xl {
+    max-width: 100%;
+  }
+}
 .botonesmargen {
-  margin-top: -5px;
-  margin-bottom: 15px;
+  margin-top: 5px;
+  margin-bottom: 5px;
 }
 </style>
