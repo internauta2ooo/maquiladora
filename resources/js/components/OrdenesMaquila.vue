@@ -9,8 +9,39 @@
           @click="crearMarca()"
         >
           Crear orden
-        </b-button></b-col
-      >
+        </b-button>
+      </b-col>
+      <b-col>
+        <b-button
+          size="sm"
+          variant="primary"
+          class="botonesmargen"
+          @click="crearMarca()"
+        >
+          Crear orden
+        </b-button>
+        <input type="file" accept="image/*" capture="camera" />
+      </b-col>
+      <b-col>
+        <template>
+          <image-uploader
+            :debug="1"
+            :maxWidth="512"
+            :quality="0.7"
+            :autoRotate="true"
+            outputFormat="verbose"
+            :preview="false"
+            :className="['fileinput', { 'fileinput--loaded': hasImage }]"
+            capture="environment"
+            accept="video/*,image/*"
+            doNotResize="['gif', 'svg']"
+            @input="setImage"
+            @onUpload="startImageResize"
+            @onComplete="endImageResize"
+          ></image-uploader>
+        </template>
+        <image-uploader @input="setImage"></image-uploader>
+      </b-col>
     </b-row>
     <b-input-group size="sm">
       <b-form-input
@@ -135,6 +166,8 @@
 <script>
 import Swal from "sweetalert2";
 import CrearOrdenEntrega from "./CrearOrdenEntrega.vue";
+import ImageUploader from "vue-image-upload-resize";
+Vue.use(ImageUploader);
 export default {
   components: {
     CrearOrdenEntrega,
@@ -208,6 +241,11 @@ export default {
     // updateMessage(variable){
     //     this.idOrdenParaEntregar=variable;
     // },
+    setImage: function (file) {
+      this.hasImage = true;
+      this.image = file;
+    },
+
     crearMarca() {
       window.location.href = "marca";
     },

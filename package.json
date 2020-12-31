@@ -35,6 +35,7 @@
         "object-path": "^0.11.5",
         "signature_pad": "^3.0.0-beta.4",
         "sweetalert2": "^10.12.5",
+        "vue-image-upload-resize": "^2.3.0",
         "vue-loader": "^15.9.6",
         "vue-signature-pad": "^2.0.2"
     }
