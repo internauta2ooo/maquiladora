@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <b-modal id="subirimagenes" size="xl">
+    <b-modal title="Subir imagenes" id="subirimagenes" size="xl">
       <b-row>
         <b-col>
           <p>Folio: {{ informacionOrden[0].folio_id }}</p></b-col

@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <b-modal id="crearorden" size="xl">
+    <b-modal title="Crear orden de entrega" id="crearorden" size="xl">
       <b-row>
         <b-col>
           <table
@@ -181,7 +181,7 @@ export default {
       });
       axios
         .get("obtenernumerotallas?ordenTalla=" + idOrdenTalla)
-        .then((response) => {          
+        .then((response) => {
           let totalPorEntregar = 0;
           let icono = "";
           let texto = "";
@@ -207,7 +207,7 @@ export default {
               this.$refs[value][0]._data.localValue = maximasPorEntregar;
               texto = "Lo maximo que puedes entregar es: " + maximasPorEntregar;
             }
-            totalPorEntregar = this.$refs[value][0]._data.localValue;           
+            totalPorEntregar = this.$refs[value][0]._data.localValue;
           } else if (
             response.data.data.cantidad_orden <
             response.data.data.cantidad_orden_entregadas
@@ -231,7 +231,7 @@ export default {
             Swal.close;
           });
         })
-        .catch((error) => {         
+        .catch((error) => {
           Swal.close;
           Swal.fire({
             icon: "error",
@@ -255,14 +255,14 @@ export default {
     };
   },
   created: function () {
-    console.log("Component created crearordenentrega....");   
+    console.log("Component created crearordenentrega....");
   },
   mounted() {
-    console.log("Component mounted crear orden.");    
+    console.log("Component mounted crear orden.");
     this.$root.$on("reiniciarfirma", () => {
       this.firmarYa = this.reiniciarFirmas;
       console.log(this.firmarYa);
-    }); 
+    });
   },
 };
 </script>
