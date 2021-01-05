@@ -226,6 +226,33 @@ class OrdenController extends Controller
             return responder()->error("400", "No hay información")->respond(400, ["Content-type" => "application/json; charset=utf-8", 'Charset' => 'utf-8']);
         }
     }
+    public function guardarImagen(Request $request)
+    {
+        $data = $request->all();
+        $file = file_get_contents($request->imagen);
+        $idOrden = $request->idOrden;
+        $tipoArchivo = $request->tipoArchivo;
+        // var_dump($data);
+        $objOrdenes = new OrdenServicios();
+        $objOrdenes->guardarImagen($file, $idOrden, $tipoArchivo);
+        return $data;
+    }
+    public function obtenerImagenes(Request $request)
+    {
+        $idOrden = $request->idOrden;
+        $objOrdenes = new OrdenServicios();
+        $respuestaImagenes = $objOrdenes->obtenerImagenes($idOrden);
+        // var_dump($respuestaImagenes);
+        return responder()->success($respuestaImagenes)->respond(200, ["header" => 2, "Content-type" => "application/json; charset=utf-8", 'Charset' => 'utf-8']);
+    }
+    public function eliminarImagen(Request $request)
+    {
+        $imagenOrdenId = $request->imagenOrdenId;
+        $objOrdenes = new OrdenServicios();
+        $respuestaImagen = $objOrdenes->eliminarImagen($imagenOrdenId);
+
+        return responder()->success()->respond(200, ["header" => 2, "Content-type" => "application/json; charset=utf-8", 'Charset' => 'utf-8']);
+    }
     public function obtenerOrdenesMaquilaTallas()
     {
         $objOrdenes = new OrdenServicios();

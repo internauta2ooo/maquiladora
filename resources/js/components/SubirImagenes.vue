@@ -1,119 +1,60 @@
 <template>
   <div class="container">
-    <b-modal id="crearorden" size="xl">
+    <b-modal id="subirimagenes" size="xl">
       <b-row>
         <b-col>
-          <table
-            id="tablaParaEntregar"
-            ref="tablaParaEntregar"
-            v-show="!firmarYa"
-          >
-            <tbody>
-              <template
-                v-for="(asFor, index) in idOrdenMaquila[0].listaOrdenada"
-              >
-                <tr class="filasinput" :key="asFor">
-                  <template v-for="(asForColumna, indexColumna) in asFor">
-                    <div :key="asForColumna" v-if="index == 0">
-                      <b-form-input
-                        :id="asForColumna"
-                        :value="asForColumna"
-                        :ref="asForColumna"
-                        @change="
-                          validarCantidadPorEntregar(asForColumna, $event)
-                        "
-                        disabled="true"
-                      ></b-form-input>
-                    </div>
-                    <div
-                      :key="asForColumna"
-                      v-else-if="indexColumna == 0 || indexColumna == 1"
-                    >
-                      <b-form-input
-                        :id="asForColumna"
-                        :value="asForColumna"
-                        :ref="asForColumna"
-                        @change="
-                          validarCantidadPorEntregar(asForColumna, $event)
-                        "
-                        disabled="true"
-                      ></b-form-input>
-                    </div>
-                    <div v-else :key="asForColumna">
-                      <b-form-input
-                        :id="asForColumna"
-                        :ref="asForColumna"
-                        :value="0"
-                        @change="
-                          validarCantidadPorEntregar(asForColumna, asForColumna)
-                        "
-                      ></b-form-input>
-                    </div>
-                  </template>
-                </tr>
-              </template>
-            </tbody>
-          </table>
+          <p>lol 2.0</p>
         </b-col>
       </b-row>
+      <b-row>
+        <b-col>
+          <template>
+            <image-uploader
+              :debug="1"
+              :maxWidth="512"
+              :quality="0.7"
+              :autoRotate="true"
+              outputFormat="verbose"
+              :preview="false"
+              :className="['Array', { 'fileinput--loaded': hasImage }]"
+              capture="environment"
+              accept="video/*,image/*"
+              doNotResize="['gif', 'svg']"
+              @input="setImage"
+              @onUpload="startImageResize"
+              @onComplete="endImageResize"
+            ></image-uploader>
+          </template>
 
-      <b-row class="text-center">
-        <b-col>
-          <b-button
-            v-show="!firmarYa"
-            size="sm"
-            variant="primary"
-            class="botonesmargen"
-            @click="avanzarFirma(firmarYa)"
-          >
-            Pasar a firmar la orden
-          </b-button>
-          <b-button
-            v-show="firmarYa"
-            size="sm"
-            variant="primary"
-            class="botonesmargen"
-            @click="avanzarFirma(firmarYa)"
-          >
-            Cambiar cantidades a entregar
-          </b-button>
+          <div class="preview">
+            <p></p>
+            <div v-for="recorrofotos in imagenes" v-bind:key="recorrofotos">
+              <div class="contenedorsubir">
+                <img
+                  class="ajusteimagenes"
+                  :src="recorrofotos.imagen_completa"
+                  :id="recorrofotos.imagen_orden_id"
+                />
+                <!-- <b-buttonrecorrofotos.id.dataUrl, @click="eliminarImagen(1)" class="botonencima"
+                  >Eliminar</b-buttonrecorrofotos.id.dataUrl,
+                > -->
+                <b-button
+                  @click="eliminarImagen(recorrofotos.imagen_orden_id)"
+                  class="botonencima"
+                  >Eliminar imagen x2</b-button
+                >
+              </div>
+            </div>
+          </div>
         </b-col>
       </b-row>
       <b-row class="text-center">
-        <VueSignaturePad
-          v-show="firmarYa"
-          style="display: none"
-          id="signature"
-          width="100%"
-          height="300px"
-          ref="signaturePad"
-          :options="{
-            onBegin: () => {
-              $refs.signaturePad.resizeCanvas();
-            },
-          }"
-        />
+        <b-col> </b-col>
       </b-row>
+      <b-row class="text-center"> </b-row>
       <b-row class="text-center">
-        <b-col>
-          <b-button
-            v-show="firmarYa"
-            size="sm"
-            variant="primary"
-            class="botonesmargen"
-            @click="undo"
-            >Limpiar</b-button
-          >
-        </b-col>
+        <b-col> </b-col>
       </b-row>
-      <template #modal-footer="{ ok, cancel, hide }">
-        <b-button size="sm" variant="danger" @click="cancel()">
-          Cancelar
-        </b-button>
-        <b-button size="sm" variant="success" @click="guardarOrdenEntrega()">
-          Guardad orden de entrega</b-button
-        >
-      </template>
     </b-modal>
   </div>
 </template>
@@ -122,15 +63,117 @@
 import Swal from "sweetalert2";
 import Vue from "vue";
 import VueSignaturePad from "vue-signature-pad";
-
+import ImageUploader from "vue-image-upload-resize";
+import UploadImage from "vue-upload-image";
+// register globally
+Vue.use(ImageUploader);
 Vue.use(VueSignaturePad);
+
 export default {
   name: "crearOrdenEntrega",
-  props: ["idOrdenMaquila", "reiniciarFirmas"],
+  props: ["idOrdenMaquila", "imagenes"],
   created: function () {
     console.log("se creo el componente orden de entrega...");
   },
   methods: {
+    eliminarImagen(imagenOrdenId) {
+      // console.log(this.$refs);
+      // console.log(idOrden);
+      console.log("loggin");
+      axios
+        .get("eliminarimagen?imagenOrdenId=" + imagenOrdenId)
+        .then((response) => {
+          console.log("Esperando elimnar la imagen");
+          console.log(response.data.data);
+          this.$parent.obtenerImagenes(this.idOrdenMaquila);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    b64toBlob(b64Data, contentType = "", sliceSize = 512) {
+      return new Promise((resolve) => {
+        const byteChar = atob(b64Data);
+        const byteArrays = [];
+        for (let offset = 0; offset < byteChar.length; offset += sliceSize) {
+          const slice = byteChar.slice(offset, offset + sliceSize);
+          const byteNumbers = new Array(slice.length);
+          for (let i = 0; i < slice.length; i++) {
+            byteNumbers[i] = slice.charCodeAt(i);
+          }
+          const byteArray = new Uint8Array(byteNumbers);
+          byteArrays.push(byteArray);
+        }
+        const blob = new Blob(byteArrays, { type: contentType });
+        resolve(blob);
+      });
+    },
+    blobtoB64(blob) {
+      return new Promise((resolve) => {
+        var reader = new FileReader();
+        var base64data;
+        reader.readAsDataURL(blob);
+        reader.onloadend = function () {
+          base64data = reader.result;
+          console.log("Promise 64x");
+          console.log(base64data);
+          resolve(base64data);
+        };
+      });
+    },
+    async subirImagen(dataUrl, idOrden, tipoArchivo) {
+      console.log(dataUrl);
+      console.log(idOrden);
+      const formData = new FormData();
+      formData.append("imagen", dataUrl);
+      formData.append("idOrden", idOrden);
+      formData.append("tipoArchivo", tipoArchivo);
+      axios
+        .post("guardarimagen", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then((response) => {
+          console.log("Esperando guardar imagen");
+          console.log(response.data.data);
+          this.$parent.obtenerImagenes(this.idOrdenMaquila);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    // eliminarImagen(idImagen) {
+    //   let anything = atob("lolito");
+    //   console.log("any2x");
+    //   console.log(anything);
+    //   let bas6 = "xxx";
+    //   var decode = atob("sss");
+    //   var blob = new Blob([decode], { type: "lol" });
+    //   var reader = new FileReader();
+    //   reader.readAsDataURL(blob);
+    //   reader.onloadend = function () {
+    //     var base = reader.result;
+    //     console.log("base 64");
+    //     console.log(base);
+    //   };
+    //   alert("ss");
+    // },
+    setImage: function (file) {
+      this.hasImage = true;
+      this.image = file;
+      let objFoto = { id: file };
+      this.fotos.push(objFoto);
+      console.log("le foto...");
+      console.log(this.image.dataUrl);
+      let textoParaCortar = this.image.dataUrl.split(",");
+      let tipoArchivo = textoParaCortar[0];
+      console.log("arrya cortado");
+      console.log(tipoArchivo);
+      console.log("el id");
+      console.log(this.idOrdenMaquila);
+      this.subirImagen(this.image.dataUrl, this.idOrdenMaquila, tipoArchivo);
+    },
     guardarOrdenEntrega() {
       Swal.fire({
         icon: "success",
@@ -262,6 +305,7 @@ export default {
   data() {
     return {
       firmarYa: 1,
+      fotos: [],
     };
   },
   created: function () {
@@ -271,17 +315,27 @@ export default {
   mounted() {
     console.log("Component mounted crear orden.");
     console.log(this.idOrdenMaquila);
-    this.$root.$on("reiniciarfirma", () => {
-      this.firmarYa = this.reiniciarFirmas;
-      console.log(this.firmarYa);
-    });
-
-     
-
   },
 };
 </script>
 <style>
+.contenedorsubir {
+  margin: 20px;
+  position: relative;
+  width: 90%;
+}
+.preview {
+  display: flex;
+  flex-wrap: wrap;
+}
+.ajusteimagenes {
+  width: 100%;
+}
+.botonencima {
+  position: absolute;
+  top: 0%;
+  left: 70%;
+}
 .filasinput {
   display: flex;
 }

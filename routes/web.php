@@ -38,4 +38,9 @@ Route::get('/obtenerordenesparaentregar', 'OrdenController@obtenerOrdenesMaquila
 //Obtenemos si se puede entregar el numero de piezas...
 Route::get('/obtenernumerotallas', 'OrdenController@obtenerNumeroTallas');
 
+Route::post('/guardarimagen', 'OrdenController@guardarImagen');
+
+Route::get('/obtenerimagenes', 'OrdenController@obtenerImagenes');
+Route::get('/eliminarimagen', 'OrdenController@eliminarImagen');
+
 Auth::routes();

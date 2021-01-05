@@ -11,37 +11,8 @@
           Crear orden
         </b-button>
       </b-col>
-      <b-col>
-        <b-button
-          size="sm"
-          variant="primary"
-          class="botonesmargen"
-          @click="crearMarca()"
-        >
-          Crear orden
-        </b-button>
-        <input type="file" accept="image/*" capture="camera" />
-      </b-col>
-      <b-col>
-        <template>
-          <image-uploader
-            :debug="1"
-            :maxWidth="512"
-            :quality="0.7"
-            :autoRotate="true"
-            outputFormat="verbose"
-            :preview="false"
-            :className="['fileinput', { 'fileinput--loaded': hasImage }]"
-            capture="environment"
-            accept="video/*,image/*"
-            doNotResize="['gif', 'svg']"
-            @input="setImage"
-            @onUpload="startImageResize"
-            @onComplete="endImageResize"
-          ></image-uploader>
-        </template>
-        <image-uploader @input="setImage"></image-uploader>
-      </b-col>
+      <b-col> </b-col>
+      <b-col> </b-col>
     </b-row>
     <b-input-group size="sm">
       <b-form-input
@@ -88,7 +59,7 @@
                   </tr>
                 </tbody>
               </table>
-              {{ row.item.listaOrdenada }}
+              <!-- {{ row.item.listaOrdenada }} -->
               <!-- <ul id="listaordenes" style="list-style-type: none">
                 <li
                   id="ordenes"
@@ -141,6 +112,18 @@
               variant="primary"
               >Crear Orden Entrega</b-button
             >
+            <b-button
+              size="sm"
+              @click="crearOrdenEntrega(row.item.orden_entrega_id)"
+              variant="primary"
+              >Ver imagenes</b-button
+            >
+            <b-button
+              size="sm"
+              @click="obtenerImagenes(row.item.orden_entrega_id)"
+              variant="primary"
+              >Subir imagenes</b-button
+            >
           </b-card>
         </template>
       </b-table>
@@ -160,21 +143,28 @@
       :idOrdenMaquila="idOrdenParaEntregar"
       :reiniciarFirmas="reiniciarFirma"
     />
+    <SubirImagenes :idOrdenMaquila="idOrdenParaEntregar" :imagenes="imagenes" />
   </div>
 </template>
 
 <script>
 import Swal from "sweetalert2";
 import CrearOrdenEntrega from "./CrearOrdenEntrega.vue";
+import SubirImagenes from "./SubirImagenes.vue";
 import ImageUploader from "vue-image-upload-resize";
+import UploadImage from "vue-upload-image";
+// register globally
 Vue.use(ImageUploader);
 export default {
   components: {
     CrearOrdenEntrega,
+    SubirImagenes,
+    UploadImage,
   },
   data() {
     return {
       idOrdenParaEntregar: [{ listaOrdenada: [] }],
+      imagenes: "",
       reiniciarFirma: false,
       fields: [
         { key: "folio_id", label: "Numero de Orden" },
@@ -238,14 +228,29 @@ export default {
     };
   },
   methods: {
-    // updateMessage(variable){
-    //     this.idOrdenParaEntregar=variable;
-    // },
-    setImage: function (file) {
-      this.hasImage = true;
-      this.image = file;
-    },
+    obtenerImagenes(idOrden) {
+      console.log("run remote code");
+      console.log(idOrden);
+      this.idOrdenParaEntregar = idOrden;
 
+      // this.$root.$emit("obtenerimagenes");
+
+      axios
+        .get("obtenerimagenes?idOrden=" + idOrden)
+        .then((response) => {
+          console.log("Esperando guardar imagen");
+          console.log(response.data.data);
+          response.data.data.forEach((valor, index) => {
+            response.data.data[index].imagen_completa =
+              valor.tipo_archivo + "," + valor.imagen;
+          });
+          this.imagenes = response.data.data;
+          this.$bvModal.show("subirimagenes");
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
     crearMarca() {
       window.location.href = "marca";
     },
@@ -272,7 +277,7 @@ export default {
     },
     crearOrdenEntrega(orden_entrega_id) {
       console.log("execute..................");
-      this.$root.$emit("component1");
+      this.$root.$emit("reiniciarfirma");
       axios
         .get("obtenerordenesparaentregar?idOrden=" + orden_entrega_id)
         .then((response) => {
@@ -287,6 +292,23 @@ export default {
           });
         });
     },
+    // subirImagenes(orden_entrega_id) {
+    //   console.log("execute..................2.0");
+    //   // this.$root.$emit("component1");
+    //   axios
+    //     .get("obtenerordenesparaentregar?idOrden=" + orden_entrega_id)
+    //     .then((response) => {
+    //       this.idOrdenParaEntregar = response.data.data;
+    //       this.$bvModal.show("subirimagenes");
+    //     })
+    //     .catch(() => {
+    //       console.log("no hay ordenes");
+    //       Swal.fire({
+    //         icon: "error",
+    //         text: "No hay información para esta orden...",
+    //       });
+    //     });
+    // },
     obtenerOrdenesMaquila() {
       Swal.showLoading();
       axios
@@ -331,9 +353,13 @@ export default {
   },
   mounted() {
     console.log("Component mounted.");
+    this.$root.$on("obtenerimagenes", () => {
+      this.obtenerImagenes();
+      console.log("Ejecutando metodo remoto x2");
+      console.log(this.idOrdenMaquila);
+    });
   },
   computed: {
-    //I wanna test ir :D
     totalRows() {
       return this.items.length;
     },

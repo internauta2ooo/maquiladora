@@ -34,6 +34,36 @@ class OrdenServicios
         var_dump($id);
         return $id;
     }
+    public static function guardarImagen(
+        $dataUrl,
+        $idOrden,
+        $tipoArchivo
+    ) {
+        $id = DB::table('imagenes_orden')->insertGetId([
+            "imagen" => $dataUrl, "orden_entrega_id" => $idOrden, "tipo_archivo" => $tipoArchivo
+        ]);
+        var_dump("la imagen esta insertada");
+        var_dump($id);
+        return $id;
+    }
+
+    public static function obtenerImagenes(
+        $idOrden
+    ) {
+        $listaImagenes = DB::table('imagenes_orden')->select('*')->where("orden_entrega_id", "=", $idOrden)->get();
+        foreach ($listaImagenes as $key => $imagenes) {
+            $listaImagenes[$key]->imagen = base64_encode($imagenes->imagen);
+        }
+        return json_decode(json_encode($listaImagenes), true);
+    }
+    public static function eliminarImagen(
+        $imagenOrdenId
+    ) {
+        // var_dump($imagenOrdenId);
+        $estatusEliminado = DB::table('imagenes_orden')->where("imagen_orden_id", "=", $imagenOrdenId)->delete();
+
+        return $estatusEliminado;
+    }
 
     public static function insertarCantidadOrdenes($ordenEntregaId)
     {
@@ -234,7 +264,7 @@ class OrdenServicios
             ->get();
         // $arr = collect($talla);
         // var_dump($talla);
-        return json_decode(json_encode($talla), true);;
+        return json_decode(json_encode($talla), true);
     }
 
     public static function insertarMarca($nombre, $descripcion)

@@ -4,14 +4,13 @@
  * building robust, powerful web applications using Vue and Laravel.
  */
 
-require('./bootstrap');
+require("./bootstrap");
 
-window.Vue = require('vue');
+window.Vue = require("vue");
 
+import BootstrapVue from "bootstrap-vue"; //Importing
 
-import BootstrapVue from 'bootstrap-vue' //Importing
-
-Vue.use(BootstrapVue)
+Vue.use(BootstrapVue);
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
@@ -23,9 +22,18 @@ Vue.use(BootstrapVue)
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
-
-Vue.component('ordenes-maquila', require('./components/OrdenesMaquila.vue').default);
-Vue.component('crear-orden-entrega', require('./components/CrearOrdenEntrega.vue').default);
+Vue.component(
+    "ordenes-maquila",
+    require("./components/OrdenesMaquila.vue").default
+);
+Vue.component(
+    "crear-orden-entrega",
+    require("./components/CrearOrdenEntrega.vue").default
+);
+Vue.component(
+    "subir-imagenes",
+    require("./components/SubirImagenes.vue").default
+);
 
 // Vue.component('crear-orden-entrega-modal', require('./components/CrearOrdenEntregaModal.vue').default);
 
@@ -36,5 +44,5 @@ Vue.component('crear-orden-entrega', require('./components/CrearOrdenEntrega.vue
  */
 
 const app = new Vue({
-    el: '#app',
+    el: "#app"
 });
