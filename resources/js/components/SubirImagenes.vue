@@ -13,7 +13,7 @@
               :debug="1"
               :maxWidth="512"
               :quality="0.7"
-              :autoRotate="true"
+              :autoRotate="false"
               outputFormat="verbose"
               :preview="false"
               :className="['Array', { 'fileinput--loaded': hasImage }]"
