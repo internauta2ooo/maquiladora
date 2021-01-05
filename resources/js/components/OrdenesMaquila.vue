@@ -139,7 +139,11 @@
       :idOrdenMaquila="idOrdenParaEntregar"
       :reiniciarFirmas="reiniciarFirma"
     />
-    <SubirImagenes :idOrdenMaquila="idOrdenParaEntregar" :imagenes="imagenes" />
+    <SubirImagenes
+      :idOrdenMaquila="idOrdenParaEntregar"
+      :imagenes="imagenes"
+      :informacionOrden="informacionOrden"
+    />
   </div>
 </template>
 
@@ -159,6 +163,7 @@ export default {
   },
   data() {
     return {
+      informacionOrden: "",
       idOrdenParaEntregar: [{ listaOrdenada: [] }],
       imagenes: "",
       reiniciarFirma: false,
@@ -225,23 +230,31 @@ export default {
   },
   methods: {
     obtenerImagenes(idOrden) {
-      console.log("run remote code");
-      console.log(idOrden);
+      Swal.fire({
+        title: "Cargando imagenes...",
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        allowEnterKey: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+      });
       this.idOrdenParaEntregar = idOrden;
+      this.informacionOrdenes(idOrden);
       axios
         .get("obtenerimagenes?idOrden=" + idOrden)
         .then((response) => {
-          console.log("Esperando guardar imagen");
-          console.log(response.data.data);
           response.data.data.forEach((valor, index) => {
             response.data.data[index].imagen_completa =
               valor.tipo_archivo + "," + valor.imagen;
           });
           this.imagenes = response.data.data;
           this.$bvModal.show("subirimagenes");
+          Swal.close();
         })
         .catch((error) => {
           console.log(error);
+          Swal.close();
         });
     },
     crearMarca() {
@@ -257,7 +270,6 @@ export default {
           responseType: "blob",
         })
         .then((response) => {
-          console.log(response);
           let blob = new Blob([response.data], {
               type: "application/pdf",
             }),
@@ -269,7 +281,6 @@ export default {
         });
     },
     crearOrdenEntrega(orden_entrega_id) {
-      console.log("execute..................");
       this.$root.$emit("reiniciarfirma");
       axios
         .get("obtenerordenesparaentregar?idOrden=" + orden_entrega_id)
@@ -285,25 +296,15 @@ export default {
           });
         });
     },
-    // subirImagenes(orden_entrega_id) {
-    //   console.log("execute..................2.0");
-    //   // this.$root.$emit("component1");
-    //   axios
-    //     .get("obtenerordenesparaentregar?idOrden=" + orden_entrega_id)
-    //     .then((response) => {
-    //       this.idOrdenParaEntregar = response.data.data;
-    //       this.$bvModal.show("subirimagenes");
-    //     })
-    //     .catch(() => {
-    //       console.log("no hay ordenes");
-    //       Swal.fire({
-    //         icon: "error",
-    //         text: "No hay información para esta orden...",
-    //       });
-    //     });
-    // },
+    informacionOrdenes(orden_entrega_id) {
+      axios
+        .get("obtenerordenesparaentregar?idOrden=" + orden_entrega_id)
+        .then((response) => {
+          this.informacionOrden = response.data.data;
+        })
+        .catch(() => {});
+    },
     obtenerOrdenesMaquila() {
-      // Swal.showLoading();
       Swal.fire({
         title: "Espere por favor...",
         allowOutsideClick: false,

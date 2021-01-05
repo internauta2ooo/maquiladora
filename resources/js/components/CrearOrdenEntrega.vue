@@ -181,14 +181,7 @@ export default {
       });
       axios
         .get("obtenernumerotallas?ordenTalla=" + idOrdenTalla)
-        .then((response) => {
-          console.log("Validando la cantidad de entrega...");
-          console.log(response.data.data);
-          console.log(response.data.data.cantidad_orden);
-          console.log(response.data.data.cantidad_orden_entregadas);
-          console.log(this.$refs[value]);
-          console.log(this.$refs[value][0]);
-          console.log(this.$refs[value][0]._data.localValue);
+        .then((response) => {          
           let totalPorEntregar = 0;
           let icono = "";
           let texto = "";
@@ -214,8 +207,7 @@ export default {
               this.$refs[value][0]._data.localValue = maximasPorEntregar;
               texto = "Lo maximo que puedes entregar es: " + maximasPorEntregar;
             }
-            totalPorEntregar = this.$refs[value][0]._data.localValue;
-            console.log("Valido");
+            totalPorEntregar = this.$refs[value][0]._data.localValue;           
           } else if (
             response.data.data.cantidad_orden <
             response.data.data.cantidad_orden_entregadas
@@ -239,9 +231,7 @@ export default {
             Swal.close;
           });
         })
-        .catch((error) => {
-          console.log("el error");
-          console.log(error);
+        .catch((error) => {         
           Swal.close;
           Swal.fire({
             icon: "error",
@@ -265,19 +255,14 @@ export default {
     };
   },
   created: function () {
-    console.log("Component created crearordenentrega....");
-    console.log(this.idOrdenMaquila);
+    console.log("Component created crearordenentrega....");   
   },
   mounted() {
-    console.log("Component mounted crear orden.");
-    console.log(this.idOrdenMaquila);
+    console.log("Component mounted crear orden.");    
     this.$root.$on("reiniciarfirma", () => {
       this.firmarYa = this.reiniciarFirmas;
       console.log(this.firmarYa);
-    });
-
-     
-
+    }); 
   },
 };
 </script>

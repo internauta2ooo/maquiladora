@@ -2,7 +2,9 @@
   <div class="container">
     <b-modal id="subirimagenes" size="xl">
       <b-row>
-        <b-col> </b-col>
+        <b-col>
+          <p>Folio: {{ informacionOrden[0].folio_id }}</p></b-col
+        >
         <b-col></b-col>
         <b-col>
           <template>
@@ -86,45 +88,59 @@ import Vue from "vue";
 import VueSignaturePad from "vue-signature-pad";
 import ImageUploader from "vue-image-upload-resize";
 import UploadImage from "vue-upload-image";
-// register globally
+
 Vue.use(ImageUploader);
 Vue.use(VueSignaturePad);
 
 export default {
   name: "crearOrdenEntrega",
-  props: ["idOrdenMaquila", "imagenes"],
+  props: ["idOrdenMaquila", "imagenes", "informacionOrden"],
   created: function () {
     console.log("se creo el componente orden de entrega...");
   },
   methods: {
     eliminarImagen(imagenOrdenId) {
       Swal.fire({
-        title: "Espere por favor...",
-        allowOutsideClick: false,
-        allowEscapeKey: false,
-        allowEnterKey: false,
-        didOpen: () => {
-          Swal.showLoading();
-        },
-      }).then((result) => {});
-      axios
-        .get("eliminarimagen?imagenOrdenId=" + imagenOrdenId)
-        .then((response) => {
-          Swal.close();
-          console.log("Se elimino la imagen");
+        title: "¿Quieres eliminar la imagen?",
+        showDenyButton: true,
+        showCancelButton: true,
+        showConfirmButton: false,
+        denyButtonText: `Eliminar`,
+        cancelButtonText: "Cancelar",
+      }).then((result) => {
+        /* Read more about isConfirmed, isDenied below */
+        if (result.isConfirmed) {
+          Swal.fire("Saved!", "", "success");
+        } else if (result.isDenied) {
           Swal.fire({
-            icon: "success",
-            text: "Se elimino la imagen",
-            showConfirmButton: true,
-            timer: 2000,
-          }).then(() => {});
-          console.log("Esperando elimnar la imagen");
-          console.log(response.data.data);
-          this.$parent.obtenerImagenes(this.idOrdenMaquila);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+            title: "Espere por favor...",
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            allowEnterKey: false,
+            didOpen: () => {
+              Swal.showLoading();
+            },
+          }).then((result) => {});
+          axios
+            .get("eliminarimagen?imagenOrdenId=" + imagenOrdenId)
+            .then((response) => {
+              Swal.close();
+              console.log("Se elimino la imagen");
+              Swal.fire({
+                icon: "success",
+                text: "Se elimino la imagen",
+                showConfirmButton: true,
+                timer: 2000,
+              }).then(() => {});
+              console.log("Esperando elimnar la imagen");
+              console.log(response.data.data);
+              this.$parent.obtenerImagenes(this.idOrdenMaquila);
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        }
+      });
     },
     b64toBlob(b64Data, contentType = "", sliceSize = 512) {
       return new Promise((resolve) => {
@@ -157,8 +173,6 @@ export default {
       });
     },
     async subirImagen(dataUrl, idOrden, tipoArchivo) {
-      console.log(dataUrl);
-      console.log(idOrden);
       const formData = new FormData();
       formData.append("imagen", dataUrl);
       formData.append("idOrden", idOrden);
@@ -171,18 +185,26 @@ export default {
         })
         .then((response) => {
           Swal.close();
-          console.log("Esperando guardar imagen");
           Swal.fire({
             icon: "success",
             text: "Se guardo la imagen",
-            showConfirmButton: true,
-            timer: 2000,
-          }).then(() => {});
-          console.log(response.data.data);
-          this.$parent.obtenerImagenes(this.idOrdenMaquila);
+            showConfirmButton: false,
+            timer: 1000,
+          }).then(() => {
+            this.$parent.obtenerImagenes(this.idOrdenMaquila);
+          });
         })
         .catch((error) => {
           console.log(error);
+          Swal.close();
+          Swal.fire({
+            icon: "error",
+            text: "Hubo error al guardar la imagen",
+            showConfirmButton: true,
+            timer: 2000,
+          }).then(() => {
+            this.$parent.obtenerImagenes(this.idOrdenMaquila);
+          });
         });
     },
     setImage: function (file) {
@@ -194,19 +216,13 @@ export default {
         didOpen: () => {
           Swal.showLoading();
         },
-      }).then((result) => {});
+      });
       this.hasImage = true;
       this.image = file;
       let objFoto = { id: file };
       this.fotos.push(objFoto);
-      console.log("le foto...");
-      console.log(this.image.dataUrl);
       let textoParaCortar = this.image.dataUrl.split(",");
       let tipoArchivo = textoParaCortar[0];
-      console.log("arrya cortado");
-      console.log(tipoArchivo);
-      console.log("el id");
-      console.log(this.idOrdenMaquila);
       this.subirImagen(this.image.dataUrl, this.idOrdenMaquila, tipoArchivo);
     },
     guardarOrdenEntrega() {
@@ -227,12 +243,10 @@ export default {
           .getElementById("tablaParaEntregar")
           .rows[index].getElementsByTagName("div").length;
         for (let indexColumna = 2; indexColumna < columnas; indexColumna++) {
-          console.log("el value 2.0");
           let refss = document
             .getElementById("tablaParaEntregar")
             .rows[index].getElementsByTagName("div")
             [indexColumna].getElementsByTagName("input")[0].id;
-          console.log(this.$refs[refss][0].$refs.input.value);
         }
       }
     },
@@ -260,13 +274,13 @@ export default {
       axios
         .get("obtenernumerotallas?ordenTalla=" + idOrdenTalla)
         .then((response) => {
-          console.log("Validando la cantidad de entrega...");
-          console.log(response.data.data);
-          console.log(response.data.data.cantidad_orden);
-          console.log(response.data.data.cantidad_orden_entregadas);
-          console.log(this.$refs[value]);
-          console.log(this.$refs[value][0]);
-          console.log(this.$refs[value][0]._data.localValue);
+          // console.log("Validando la cantidad de entrega...");
+          // console.log(response.data.data);
+          // console.log(response.data.data.cantidad_orden);
+          // console.log(response.data.data.cantidad_orden_entregadas);
+          // console.log(this.$refs[value]);
+          // console.log(this.$refs[value][0]);
+          // console.log(this.$refs[value][0]._data.localValue);
           let totalPorEntregar = 0;
           let icono = "";
           let texto = "";
@@ -331,11 +345,6 @@ export default {
           });
         });
     },
-    crearOrdenEntrega() {
-      this.$emit("sendData", this.idOrdenParaEntregar);
-      console.log("Crear orden entrega...");
-      console.log(this.idOrdenMaquila);
-    },
   },
   data() {
     return {
@@ -345,13 +354,9 @@ export default {
   },
   created: function () {
     console.log("Component created crearordenentrega....");
-    console.log(this.idOrdenMaquila);
-    document.getElementById("file-upload-button").innerHTML = "Lolito";
-    document.getElementById("file-upload-button").innerText = "ss";
   },
   mounted() {
     console.log("Component mounted crear orden.");
-    console.log(this.idOrdenMaquila);
   },
 };
 </script>
