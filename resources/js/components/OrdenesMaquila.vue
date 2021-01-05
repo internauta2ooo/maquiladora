@@ -274,7 +274,7 @@ export default {
               type: "application/pdf",
             }),
             url = window.URL.createObjectURL(blob);
-          window.open(url);
+          window.open(url, "_blank");
         })
         .catch((error) => {
           console.log(error);
