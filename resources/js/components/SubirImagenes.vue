@@ -17,7 +17,7 @@
               outputFormat="verbose"
               :preview="false"
               :className="['Array', { 'fileinput--loaded': hasImage }]"
-              capture="environment"
+              capture="false"
               accept="video/*,image/*"
               doNotResize="['gif', 'svg']"
               @input="setImage"
