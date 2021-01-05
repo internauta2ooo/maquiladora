@@ -291,7 +291,7 @@ export default {
   margin: 5px;
 }
 </style>
-<style scoped>
+<style>
 @media (min-width: 992px) {
   .modal-dialog >>> .modal-lg,
   .modal-xl {

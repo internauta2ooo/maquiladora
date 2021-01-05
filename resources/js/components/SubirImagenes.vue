@@ -2,17 +2,14 @@
   <div class="container">
     <b-modal id="subirimagenes" size="xl">
       <b-row>
-        <b-col>
-          <p>lol 2.0</p>
-        </b-col>
-      </b-row>
-      <b-row>
+        <b-col> </b-col>
+        <b-col></b-col>
         <b-col>
           <template>
             <image-uploader
               :debug="1"
               :maxWidth="512"
-              :quality="0.7"
+              :quality="1"
               :autoRotate="false"
               outputFormat="verbose"
               :preview="false"
@@ -22,9 +19,32 @@
               @input="setImage"
               @onUpload="startImageResize"
               @onComplete="endImageResize"
-            ></image-uploader>
+              style="display: none"
+            >
+            </image-uploader>
           </template>
-
+          <label for="fileInput" slot="upload-label">
+            <figure>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="32"
+                height="32"
+                viewBox="0 0 32 32"
+              >
+                <path
+                  class="path1"
+                  d="M9.5 19c0 3.59 2.91 6.5 6.5 6.5s6.5-2.91 6.5-6.5-2.91-6.5-6.5-6.5-6.5 2.91-6.5 6.5zM30 8h-7c-0.5-2-1-4-3-4h-8c-2 0-2.5 2-3 4h-7c-1.1 0-2 0.9-2 2v18c0 1.1 0.9 2 2 2h28c1.1 0 2-0.9 2-2v-18c0-1.1-0.9-2-2-2zM16 27.875c-4.902 0-8.875-3.973-8.875-8.875s3.973-8.875 8.875-8.875c4.902 0 8.875 3.973 8.875 8.875s-3.973 8.875-8.875 8.875zM30 14h-4v-2h4v2z"
+                ></path>
+              </svg>
+            </figure>
+            <span class="upload-caption">{{
+              hasImage ? "Subir imagen" : "Subir imagen"
+            }}</span>
+          </label>
+        </b-col>
+      </b-row>
+      <b-row>
+        <b-col>
           <div class="preview">
             <p></p>
             <div v-for="recorrofotos in imagenes" v-bind:key="recorrofotos">
@@ -40,7 +60,9 @@
                 <b-button
                   @click="eliminarImagen(recorrofotos.imagen_orden_id)"
                   class="botonencima"
-                  >Eliminar imagen x2</b-button
+                  pill
+                  variant="outline-danger"
+                  >Eliminar</b-button
                 >
               </div>
             </div>
@@ -76,12 +98,26 @@ export default {
   },
   methods: {
     eliminarImagen(imagenOrdenId) {
-      // console.log(this.$refs);
-      // console.log(idOrden);
-      console.log("loggin");
+      Swal.fire({
+        title: "Espere por favor...",
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        allowEnterKey: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+      }).then((result) => {});
       axios
         .get("eliminarimagen?imagenOrdenId=" + imagenOrdenId)
         .then((response) => {
+          Swal.close();
+          console.log("Se elimino la imagen");
+          Swal.fire({
+            icon: "success",
+            text: "Se elimino la imagen",
+            showConfirmButton: true,
+            timer: 2000,
+          }).then(() => {});
           console.log("Esperando elimnar la imagen");
           console.log(response.data.data);
           this.$parent.obtenerImagenes(this.idOrdenMaquila);
@@ -134,7 +170,14 @@ export default {
           },
         })
         .then((response) => {
+          Swal.close();
           console.log("Esperando guardar imagen");
+          Swal.fire({
+            icon: "success",
+            text: "Se guardo la imagen",
+            showConfirmButton: true,
+            timer: 2000,
+          }).then(() => {});
           console.log(response.data.data);
           this.$parent.obtenerImagenes(this.idOrdenMaquila);
         })
@@ -142,23 +185,16 @@ export default {
           console.log(error);
         });
     },
-    // eliminarImagen(idImagen) {
-    //   let anything = atob("lolito");
-    //   console.log("any2x");
-    //   console.log(anything);
-    //   let bas6 = "xxx";
-    //   var decode = atob("sss");
-    //   var blob = new Blob([decode], { type: "lol" });
-    //   var reader = new FileReader();
-    //   reader.readAsDataURL(blob);
-    //   reader.onloadend = function () {
-    //     var base = reader.result;
-    //     console.log("base 64");
-    //     console.log(base);
-    //   };
-    //   alert("ss");
-    // },
     setImage: function (file) {
+      Swal.fire({
+        title: "Espere por favor...",
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        allowEnterKey: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+      }).then((result) => {});
       this.hasImage = true;
       this.image = file;
       let objFoto = { id: file };
@@ -310,6 +346,8 @@ export default {
   created: function () {
     console.log("Component created crearordenentrega....");
     console.log(this.idOrdenMaquila);
+    document.getElementById("file-upload-button").innerHTML = "Lolito";
+    document.getElementById("file-upload-button").innerText = "ss";
   },
   mounted() {
     console.log("Component mounted crear orden.");
@@ -318,6 +356,9 @@ export default {
 };
 </script>
 <style>
+#fileInput {
+  padding: 20px;
+}
 .contenedorsubir {
   margin: 20px;
   position: relative;
@@ -332,8 +373,8 @@ export default {
 }
 .botonencima {
   position: absolute;
-  top: 0%;
-  left: 70%;
+  top: 10px;
+  left: 75%;
 }
 .filasinput {
   display: flex;
@@ -344,7 +385,7 @@ export default {
   margin: 5px;
 }
 </style>
-<style scoped>
+<style>
 @media (min-width: 992px) {
   .modal-dialog >>> .modal-lg,
   .modal-xl {

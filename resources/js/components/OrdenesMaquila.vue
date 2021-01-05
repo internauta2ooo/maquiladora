@@ -96,32 +96,28 @@
                 {{ row.item.total_piezas }}
               </b-col> -->
             </b-row>
-
-            <b-button size="sm" @click="row.toggleDetails"
+            <b-button size="sm" @click="row.toggleDetails" class="botonesorden"
               >Esconder detalles</b-button
             >
             <b-button
               size="sm"
               @click="imprimirOrden(row.item.orden_entrega_id)"
               variant="primary"
+              class="botonesorden"
               >Imprimir PDF orden</b-button
             >
             <b-button
               size="sm"
               @click="crearOrdenEntrega(row.item.orden_entrega_id)"
               variant="primary"
+              class="botonesorden"
               >Crear Orden Entrega</b-button
-            >
-            <b-button
-              size="sm"
-              @click="crearOrdenEntrega(row.item.orden_entrega_id)"
-              variant="primary"
-              >Ver imagenes</b-button
             >
             <b-button
               size="sm"
               @click="obtenerImagenes(row.item.orden_entrega_id)"
               variant="primary"
+              class="botonesorden"
               >Subir imagenes</b-button
             >
           </b-card>
@@ -232,9 +228,6 @@ export default {
       console.log("run remote code");
       console.log(idOrden);
       this.idOrdenParaEntregar = idOrden;
-
-      // this.$root.$emit("obtenerimagenes");
-
       axios
         .get("obtenerimagenes?idOrden=" + idOrden)
         .then((response) => {
@@ -310,7 +303,16 @@ export default {
     //     });
     // },
     obtenerOrdenesMaquila() {
-      Swal.showLoading();
+      // Swal.showLoading();
+      Swal.fire({
+        title: "Espere por favor...",
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        allowEnterKey: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+      }).then((result) => {});
       axios
         .get("obtenerordenesmaquila")
         .then((response) => {
@@ -367,6 +369,9 @@ export default {
 };
 </script>
 <style scoped>
+.botonesorden {
+  margin: 5px;
+}
 #ordenes {
   border-style: solid;
   border-color: rgb(199, 199, 199);
