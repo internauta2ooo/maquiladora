@@ -128,7 +128,7 @@
       <b-col sm="7" md="6" class="my-1">
         <b-pagination
           v-model="currentPage"
-          :total-rows="totalRows"
+          :total-rows="rows"
           :per-page="perPage"
           align="fill"
           size="sm"
@@ -388,7 +388,7 @@ export default {
     });
   },
   computed: {
-    totalRows() {
+    rows() {
       return this.items.length;
     },
   },
