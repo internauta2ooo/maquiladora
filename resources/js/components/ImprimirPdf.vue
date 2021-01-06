@@ -2,7 +2,11 @@
   <div class="container">
     <b-modal title="Pdf orden maquila" id="imprimirpdf" size="xl">
       <p>
-        lol<a download="ordenMaquila" :href="pdf" title="Descarga pdf"
+        <a
+          download="ordenMaquila"
+          :href="pdf"
+          title="Descarga pdf"
+          target="_blank"
           >Descarga Pdf</a
         >
       </p>
