@@ -144,6 +144,7 @@
       :imagenes="imagenes"
       :informacionOrden="informacionOrden"
     />
+    <ImprimirPdf :pdf="pdf" />
   </div>
 </template>
 
@@ -151,6 +152,7 @@
 import Swal from "sweetalert2";
 import CrearOrdenEntrega from "./CrearOrdenEntrega.vue";
 import SubirImagenes from "./SubirImagenes.vue";
+import ImprimirPdf from "./ImprimirPdf.vue";
 import ImageUploader from "vue-image-upload-resize";
 import UploadImage from "vue-upload-image";
 // register globally
@@ -160,10 +162,12 @@ export default {
     CrearOrdenEntrega,
     SubirImagenes,
     UploadImage,
+    ImprimirPdf,
   },
   data() {
     return {
       informacionOrden: "",
+      pdf: "",
       idOrdenParaEntregar: [{ listaOrdenada: [] }],
       imagenes: "",
       reiniciarFirma: false,
@@ -264,21 +268,42 @@ export default {
       this.totalRows = filteredItems.length;
       this.currentPage = 1;
     },
-    imprimirOrden(ordenEntregaId) {
-      axios
+    blobtoB64(blob) {
+      return new Promise((resolve) => {
+        var reader = new FileReader();
+        var base64data;
+        reader.readAsDataURL(blob);
+        reader.onloadend = function () {
+          base64data = reader.result;
+          console.log("Promise 64x");
+          console.log(base64data);
+          this.pdf = base64data;
+          resolve(base64data);
+        };
+      });
+    },
+    async imprimirOrden(ordenEntregaId) {
+      let blob;
+      await axios
         .get("ordenpdf?idOrden=" + ordenEntregaId, {
           responseType: "blob",
         })
         .then((response) => {
-          let blob = new Blob([response.data], {
-              type: "application/pdf",
-            }),
-            url = window.URL.createObjectURL(blob);
-          window.open(url, "_system");
+          blob = new Blob([response.data], {
+            type: "application/pdf",
+          });
+
+          //   url = window.URL.createObjectURL(blob);
+          // window.open(url, "_system");
         })
         .catch((error) => {
           console.log(error);
         });
+      let b64 = await this.blobtoB64(blob);
+      console.log("log me 2.0");
+      console.log(b64);
+      this.pdf = b64;
+      this.$bvModal.show("imprimirpdf");
     },
     crearOrdenEntrega(orden_entrega_id) {
       this.$root.$emit("reiniciarfirma");
