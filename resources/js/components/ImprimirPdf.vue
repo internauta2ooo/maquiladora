@@ -1,6 +1,11 @@
 <template>
   <div class="container">
     <b-modal title="Pdf orden maquila" id="imprimirpdf" size="xl">
+      <p>
+        lol<a download="ordenMaquila" :href="pdf" title="Descarga pdf"
+          >Descarga Pdf</a
+        >
+      </p>
       <iframe :src="pdf" id="pdforden"></iframe>
     </b-modal>
   </div>
