@@ -43,6 +43,7 @@
                       <b-form-input
                         :id="asForColumna"
                         :ref="asForColumna"
+                        type="number"
                         :value="0"
                         @change="
                           validarCantidadPorEntregar(asForColumna, asForColumna)
@@ -132,13 +133,27 @@ export default {
   },
   methods: {
     guardarOrdenEntrega() {
+      let filas = this.$refs.tablaParaEntregar.rows;
+
+      Array.from(filas).forEach(function (elementR, indexR) {
+        let columnas = elementR.childNodes;
+        Array.from(columnas).forEach(function (elementC, indexC) {
+          if (indexR > 0 && indexC > 1) {
+            console.log(elementC.firstChild.id);
+            console.log(elementC.firstChild.value);
+          }
+        });
+      });
+
       Swal.fire({
         icon: "success",
         text: "Se guardo la orden de entrega correctamente...",
         showConfirmButton: true,
         timer: 2000,
       }).then(() => {
-        this.$bvModal.hide("crearorden");
+        // console.log("lol 1");
+        // console.log(this.$refs);
+        // this.$bvModal.hide("crearorden");
       });
     },
     avanzarFirma(firmarYa) {
