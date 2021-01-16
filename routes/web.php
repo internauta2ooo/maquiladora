@@ -42,5 +42,6 @@ Route::post('/guardarimagen', 'OrdenController@guardarImagen');
 
 Route::get('/obtenerimagenes', 'OrdenController@obtenerImagenes');
 Route::get('/eliminarimagen', 'OrdenController@eliminarImagen');
+Route::post('/actualizarTallas', 'TallasController@actualizarTallas');
 
 Auth::routes();

@@ -1,6 +1,7 @@
 <template>
   <div class="container">
     <b-modal title="Crear orden de entrega" id="crearorden" size="xl">
+      <p>{{ idOrdenMaquila[0].listaOrdenada }}</p>
       <b-row>
         <b-col>
           <table
@@ -12,9 +13,9 @@
               <template
                 v-for="(asFor, index) in idOrdenMaquila[0].listaOrdenada"
               >
-                <tr class="filasinput" :key="asFor">
+                <tr class="filasinput" :key="asFor.id">
                   <template v-for="(asForColumna, indexColumna) in asFor">
-                    <div :key="asForColumna" v-if="index == 0">
+                    <div :key="asForColumna.id" v-if="index == 0">
                       <b-form-input
                         :id="asForColumna"
                         :value="asForColumna"
@@ -22,7 +23,7 @@
                         @change="
                           validarCantidadPorEntregar(asForColumna, $event)
                         "
-                        disabled="true"
+                        disabled
                       ></b-form-input>
                     </div>
                     <div
@@ -36,7 +37,7 @@
                         @change="
                           validarCantidadPorEntregar(asForColumna, $event)
                         "
-                        disabled="true"
+                        disabled
                       ></b-form-input>
                     </div>
                     <div v-else :key="asForColumna">
@@ -134,17 +135,28 @@ export default {
   methods: {
     guardarOrdenEntrega() {
       let filas = this.$refs.tablaParaEntregar.rows;
-
+      let tallasActualizar = [];
       Array.from(filas).forEach(function (elementR, indexR) {
         let columnas = elementR.childNodes;
         Array.from(columnas).forEach(function (elementC, indexC) {
           if (indexR > 0 && indexC > 1) {
-            console.log(elementC.firstChild.id);
-            console.log(elementC.firstChild.value);
+            let talla = {
+              tallaActualizar: elementC.firstChild.id,
+              cantidad: elementC.firstChild.value,
+            };
+            tallasActualizar.push(talla);
           }
         });
       });
-
+      console.log("Las tallas en objeto");
+      console.log(tallasActualizar);
+      axios
+        .post("actualizarTallas", tallasActualizar)
+        .then((response) => {
+          console.log("la response");
+          console.log(response);
+        })
+        .catch();
       Swal.fire({
         icon: "success",
         text: "Se guardo la orden de entrega correctamente...",
@@ -157,6 +169,7 @@ export default {
       });
     },
     avanzarFirma(firmarYa) {
+      console.log("before error");
       this.firmarYa = !this.firmarYa;
       let filas = document.getElementById("tablaParaEntregar").rows.length;
       for (let index = 1; index < filas; index++) {
@@ -169,7 +182,7 @@ export default {
             .getElementById("tablaParaEntregar")
             .rows[index].getElementsByTagName("div")
             [indexColumna].getElementsByTagName("input")[0].id;
-          console.log(this.$refs[refss][0].$refs.input.value);
+          // console.log(this.$refs[refss][0].$refs.input.value);
         }
       }
     },

@@ -3,8 +3,8 @@
     <b-modal title="Subir imagenes" id="subirimagenes" size="xl">
       <b-row>
         <b-col>
-          <p>Folio: {{ informacionOrden[0].folio_id }}</p></b-col
-        >
+          <p>Folio: {{ informacionOrden[0].folio_id }}</p>
+        </b-col>
         <b-col></b-col>
         <b-col>
           <template>
@@ -19,8 +19,6 @@
               accept="video/*,image/*"
               doNotResize="['gif', 'svg']"
               @input="setImage"
-              @onUpload="startImageResize"
-              @onComplete="endImageResize"
               style="display: none"
             >
             </image-uploader>
@@ -48,8 +46,7 @@
       <b-row>
         <b-col>
           <div class="preview">
-            <p></p>
-            <div v-for="recorrofotos in imagenes" v-bind:key="recorrofotos">
+            <div v-for="recorrofotos in imagenes" v-bind:key="recorrofotos.id">
               <div class="contenedorsubir">
                 <img
                   class="ajusteimagenes"
@@ -349,14 +346,17 @@ export default {
   data() {
     return {
       firmarYa: 1,
+      hasImage: false,
       fotos: [],
     };
   },
   created: function () {
     console.log("Component created crearordenentrega....");
+    // this.informacionOrden = [{ folio_id: "" }];
   },
   mounted() {
     console.log("Component mounted crear orden.");
+    // this.informacionOrden = [{ folio_id: "" }];
   },
 };
 </script>

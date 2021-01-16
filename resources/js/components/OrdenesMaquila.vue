@@ -49,11 +49,15 @@
             <b-row class="mb-2">
               <b-col sm="3" class="text-sm-right">
                 <b>Entradas de la orden</b>
+                <p>{{ row.item.listaOrdenada }}</p>
               </b-col>
               <table>
-                <tbody v-for="row in row.item.listaOrdenada" v-bind:key="row">
+                <tbody
+                  v-for="row in row.item.listaOrdenada"
+                  v-bind:key="row.id"
+                >
                   <tr>
-                    <td v-for="key in row" v-bind:key="key">
+                    <td v-for="key in row" v-bind:key="key.id">
                       {{ key }}
                     </td>
                   </tr>
@@ -140,9 +144,9 @@
       :reiniciarFirmas="reiniciarFirma"
     />
     <SubirImagenes
-      :idOrdenMaquila="idOrdenParaEntregar"
+      :idOrdenMaquila="idOrdenParaEntregarImagenes"
       :imagenes="imagenes"
-      :informacionOrden="informacionOrden"
+      :informacionOrden="informacionOrdenImagenes"
     />
     <ImprimirPdf :pdf="pdf" />
   </div>
@@ -166,9 +170,10 @@ export default {
   },
   data() {
     return {
-      informacionOrden: "",
+      informacionOrdenImagenes: [{ folio_id: "" }],
       pdf: "",
       idOrdenParaEntregar: [{ listaOrdenada: [] }],
+      idOrdenParaEntregarImagenes: [{ listaOrdenada: [] }],
       imagenes: "",
       reiniciarFirma: false,
       fields: [
@@ -234,6 +239,7 @@ export default {
   },
   methods: {
     obtenerImagenes(idOrden) {
+      console.log("before execute error");
       Swal.fire({
         title: "Cargando imagenes...",
         allowOutsideClick: false,
@@ -243,16 +249,26 @@ export default {
           Swal.showLoading();
         },
       });
-      this.idOrdenParaEntregar = idOrden;
+      this.idOrdenParaEntregarImagenes = idOrden;
       this.informacionOrdenes(idOrden);
       axios
         .get("obtenerimagenes?idOrden=" + idOrden)
         .then((response) => {
+          var arrayKey = [];
           response.data.data.forEach((valor, index) => {
+            arrayKey.push({ index: valor });
+            console.log("el valor a poner en tro array con key");
+            console.log(valor);
+
             response.data.data[index].imagen_completa =
               valor.tipo_archivo + "," + valor.imagen;
+            console.log(response.data.data);
           });
+          console.log("experimentando");
+          console.log(arrayKey);
+
           this.imagenes = response.data.data;
+
           this.$bvModal.show("subirimagenes");
           Swal.close();
         })
@@ -325,7 +341,7 @@ export default {
       axios
         .get("obtenerordenesparaentregar?idOrden=" + orden_entrega_id)
         .then((response) => {
-          this.informacionOrden = response.data.data;
+          this.informacionOrdenImagenes = response.data.data;
         })
         .catch(() => {});
     },
