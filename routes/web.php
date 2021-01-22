@@ -31,6 +31,7 @@ Route::get('/ordenesmaquila', 'OrdenController@obtenerOrdenesMaquila')->middlewa
 // Route::get('/crearordenentrega', 'OrdenController@crearOrdenEntrega')->middleware('auth');
 //Obtiene la orden en formato PDF
 Route::get('/ordenpdf', 'OrdenController@crearPdfOrdenTrabajo')->middleware('auth');
+Route::get('/ordenpdfentregada', 'OrdenController@crearPdfOrdenTrabajoEntregada')->middleware('auth');
 //Obtiene la lista de las ordenes de maquila
 Route::get('/obtenerordenesmaquila', 'OrdenController@obtenerOrdenesMaquilaTallas')->middleware('auth');
 //Obtenemos la orden de articulos por entregar...

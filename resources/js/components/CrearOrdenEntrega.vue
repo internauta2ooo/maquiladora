@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <b-modal title="Crear orden de entrega" id="crearorden" size="xl">
-      <p>{{ idOrdenMaquila[0].listaOrdenada }}</p>
+      <p>{{ idOrdenMaquila[0].listaOrdenada.folio_id }}</p>
       <b-row>
         <b-col>
           <table
@@ -135,16 +135,44 @@ export default {
   methods: {
     guardarOrdenEntrega() {
       let filas = this.$refs.tablaParaEntregar.rows;
-      let tallasActualizar = [];
+      let marca_id = this.idOrdenMaquila[0].marca_id;
+      let orden_entrega = this.idOrdenMaquila[0].orden_entrega_id;
+      let modelo_id = this.idOrdenMaquila[0].modelo_id;
+      let folio_id = this.idOrdenMaquila[0].folio_id;
+      let prenda_id = this.idOrdenMaquila[0].prenda_id;
+      let muestra_original = this.idOrdenMaquila[0].muestra_original;
+      let muestra_referencia = this.idOrdenMaquila[0].muestra_referencia;
+      let usuario_id = this.idOrdenMaquila[0].usuario_id;
+      console.log("filasss");
+      console.log(filas);
+      console.log(filas[0]);
+
+      let tallasActualizar = {
+        marcaId: marca_id,
+        modelo: modelo_id,
+        prenda: prenda_id,
+        folioId: folio_id,
+        ordenEntregaId: orden_entrega,
+        muestraOriginal: muestra_original,
+        referencia: muestra_referencia,
+        usuarioId: usuario_id,
+        tallas_actualizar: [],
+      };
+      // tallasActualizar["tallas_actualizar"] = [];
       Array.from(filas).forEach(function (elementR, indexR) {
         let columnas = elementR.childNodes;
         Array.from(columnas).forEach(function (elementC, indexC) {
           if (indexR > 0 && indexC > 1) {
+            // console.log(filas[0].childNodes[indexC].firstChild.value);
+            // console.log(filas[indexR].childNodes[0].firstChild.value);
             let talla = {
+              talla: filas[0].childNodes[indexC].firstChild.value,
+              coordinado: filas[indexR].childNodes[0].firstChild.value,
+              color: filas[indexR].childNodes[1].firstChild.value,
               tallaActualizar: elementC.firstChild.id,
               cantidad: elementC.firstChild.value,
             };
-            tallasActualizar.push(talla);
+            tallasActualizar["tallas_actualizar"].push(talla);
           }
         });
       });

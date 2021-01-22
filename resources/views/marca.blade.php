@@ -274,7 +274,7 @@
         showConfirmButton: false,
         timer: 25000
       })
-      window.location.href = 'ordenesmaquila';
+      // window.location.href = 'ordenesmaquila';
     }).catch(error => {
       console.log(error);
       Swal.fire({

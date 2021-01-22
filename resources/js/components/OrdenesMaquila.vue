@@ -46,60 +46,83 @@
         </template>
         <template v-slot:row-details="row">
           <b-card>
-            <b-row class="mb-2">
-              <b-col sm="3" class="text-sm-right">
-                <b>Entradas de la orden</b>
-                <p>{{ row.item.listaOrdenada }}</p>
+            <b-row class="mb-2 primerafila">
+              <b-col sm="4" class="text-sm-right">
+                <p>Folio id: {{ row.item.folio_id }}</p>
+                <p>Marca: {{ row.item.marca }}</p>
               </b-col>
-              <table>
-                <tbody
-                  v-for="row in row.item.listaOrdenada"
-                  v-bind:key="row.id"
-                >
-                  <tr>
-                    <td v-for="key in row" v-bind:key="key.id">
-                      {{ key }}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-              <!-- {{ row.item.listaOrdenada }} -->
-              <!-- <ul id="listaordenes" style="list-style-type: none">
-                <li
-                  id="ordenes"
-                  v-for="item in row.item.ordenesTallas"
-                  v-bind:key="item"
-                >
-                  <strong>Id:</strong>
-                  {{ item.cantidad_ordenes_id }}
-                  <strong>&nbsp;&nbsp;Coordinado:</strong>
-                  {{ item.coordinado_id }}
-                  <strong>&nbsp;&nbsp;Color:</strong>
-                  {{ item.talla_id }}
-                  <strong>&nbsp;&nbsp;Talla:</strong>
-                  {{ item.color_id }}
-                  <strong>&nbsp;&nbsp;Piezas por maquilar:</strong>
-                  {{ item.cantidad_orden }}
-                  <strong>&nbsp;&nbsp;Piezas entregadas:</strong>
-                  {{ item.cantidad_orden_entregadas }}
-                </li>
-              </ul> -->
-
-              <!-- <b-col sm="6" class="text-sm-right">
-                <strong>&nbsp;&nbsp;Usuario:</strong>
-                {{ row.item.usuario_id }}
+              <b-col sm="4" class="text-sm-right">
+                <p>Modelo: {{ row.item.modelo_id }}</p>
+                <p>Prenda: {{ row.item.prenda_id }}</p>
+                <p>Muestra original: {{ row.item.muestra_original }}</p>
               </b-col>
-              <b-col sm="6" class="text-sm-right">
-                <strong>&nbsp;&nbsp;Prenda:</strong>
-                {{ row.item.prenda_id }}
-                <strong>&nbsp;&nbsp;Muestra Original:</strong>
-                {{ row.item.muestra_original == 0 ? "No" : "Si" }}
-                <strong>&nbsp;&nbsp;Muestra Referencia:</strong>
-                {{ row.item.muestra_referencia == 0 ? "No" : "Si" }}
-                <b>Total de piezas: </b>
-                {{ row.item.total_piezas }}
-              </b-col> -->
+              <b-col sm="4" class="text-sm-right">
+                <p>Muestra referencia: {{ row.item.muestra_referencia }}</p>
+                <p>Usuario: {{ row.item.usuario_id }}</p>
+                <p>Total piezas: {{ row.item.total_piezas }}</p>
+              </b-col>
             </b-row>
+            <b-row class="mb-2">
+              <b-col sm="6" class="text-sm-right">
+                <b>Entradas de la orden</b>
+              </b-col>
+              <b-col style="overflow: auto" sm="6" class="text-sm-right">
+                <table>
+                  <tbody v-for="row in row.item.listaOrdenada" v-bind:key="row">
+                    <tr>
+                      <td v-for="key in row" v-bind:key="key">
+                        {{ key }}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </b-col>
+            </b-row>
+            <b-row class="mb-2">
+              <b-col sm="6" class="text-sm-right">
+                <b>Entradas de la orden por entregar</b>
+              </b-col>
+              <b-col style="overflow: auto" sm="6" class="text-sm-right">
+                <table>
+                  <tbody
+                    v-for="row in row.item.listaOrdenadaEntregada"
+                    v-bind:key="row"
+                  >
+                    <tr>
+                      <td v-for="key in row" v-bind:key="key">
+                        {{ key }}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </b-col>
+            </b-row>
+
+            <div v-if="row.item.ordenesEntregadas.length > 0" class="dropdown">
+              <b-dropdown
+                text="Ver ordenes entregadas"
+                block
+                variant="primary"
+                class="m-2"
+              >
+                <b-dropdown-item
+                  v-for="entregadas in row.item.ordenesEntregadas"
+                  :key="entregadas"
+                  href="#"
+                  @click="imprimirOrdenEntregada(entregadas.orden_entregada_id)"
+                >
+                  Orden:{{ entregadas.orden_entregada_id }}, Fecha de creación:
+                  {{ entregadas.fecha_creacion }}, Creada por:
+                  {{ entregadas.usuario_id }}
+                </b-dropdown-item>
+              </b-dropdown>
+            </div>
+            <div
+              v-if="row.item.ordenesEntregadas.length <= 0"
+              class="nohayentregadas"
+            >
+              <p class="exepcionp">No hay ordenes entregadas</p>
+            </div>
             <b-button size="sm" @click="row.toggleDetails" class="botonesorden"
               >Esconder detalles</b-button
             >
@@ -238,6 +261,9 @@ export default {
     };
   },
   methods: {
+    verOrdenEntregada(ordenEntregada) {
+      alert(ordenEntregada);
+    },
     obtenerImagenes(idOrden) {
       console.log("before execute error");
       Swal.fire({
@@ -321,6 +347,29 @@ export default {
       this.pdf = b64;
       this.$bvModal.show("imprimirpdf");
     },
+    async imprimirOrdenEntregada(ordenEntregaId) {
+      let blob;
+      await axios
+        .get("ordenpdfentregada?idOrden=" + ordenEntregaId, {
+          responseType: "blob",
+        })
+        .then((response) => {
+          blob = new Blob([response.data], {
+            type: "application/pdf",
+          });
+
+          //   url = window.URL.createObjectURL(blob);
+          // window.open(url, "_system");
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      let b64 = await this.blobtoB64(blob);
+      console.log("log me 2.0");
+      console.log(b64);
+      this.pdf = b64;
+      this.$bvModal.show("imprimirpdf");
+    },
     crearOrdenEntrega(orden_entrega_id) {
       this.$root.$emit("reiniciarfirma");
       axios
@@ -346,6 +395,7 @@ export default {
         .catch(() => {});
     },
     obtenerOrdenesMaquila() {
+      let _this = this;
       Swal.fire({
         title: "Espere por favor...",
         allowOutsideClick: false,
@@ -358,22 +408,31 @@ export default {
       axios
         .get("obtenerordenesmaquila")
         .then((response) => {
+          console.log("response");
+          console.log(response);
           Object.keys(response.data).map(function (key, index) {
-            let tiempoUtc = response.data[key].fecha_creacion.split(/[- :]/);
-            moment.locale("es-mx");
-            var tiempoLocal = moment(
-              new Date(
-                Date.UTC(
-                  tiempoUtc[0],
-                  tiempoUtc[1] - 1,
-                  tiempoUtc[2],
-                  tiempoUtc[3],
-                  tiempoUtc[4],
-                  tiempoUtc[5]
-                )
-              )
-            ).format("LLLL");
-            response.data[key].fecha_creacion = tiempoLocal;
+            let ordenesEntregadas = response.data[key].ordenesEntregadas;
+            // ordenesEntregadas
+            ordenesEntregadas.forEach(function (valor, indice, array) {
+              let fechaCreacionEntregada =
+                response.data[key].ordenesEntregadas[indice].fecha_creacion;
+              response.data[key].ordenesEntregadas[
+                indice
+              ].fecha_creacion = _this.utcToTimeZoneFrontEnd(
+                fechaCreacionEntregada
+              );
+              // ordenesEntregadas[indice].fecha_creacion="ssssxx";
+              console.log(valor.fecha_creacion);
+            });
+            // for (item of ordenesEntregadas) {
+            //   console.log("itemmsm");
+            //   console.log(item);
+            // }
+            let fechaCreacion = response.data[key].fecha_creacion;
+            //Recibo en formato de la base 2021-01-17 04:39:59 (UTC)
+            response.data[key].fecha_creacion = _this.utcToTimeZoneFrontEnd(
+              fechaCreacion
+            );
             response.data[key].fecha_entrega = moment(
               response.data[key].fecha_entrega
             )
@@ -382,6 +441,8 @@ export default {
           });
           this.items = response.data;
           Swal.close();
+          console.log("el funak");
+          console.log(response.data);
         })
         .catch((error) => {
           console.log(
@@ -389,6 +450,25 @@ export default {
           );
           window.location.href = "ordenesmaquila";
         });
+    },
+    utcToTimeZoneFrontEnd(utc) {
+      console.log("utcccc");
+      console.log(utc);
+      let tiempoUtc = utc.split(/[- :]/);
+      moment.locale("es-mx");
+      var tiempoLocal = moment(
+        new Date(
+          Date.UTC(
+            tiempoUtc[0],
+            tiempoUtc[1] - 1,
+            tiempoUtc[2],
+            tiempoUtc[3],
+            tiempoUtc[4],
+            tiempoUtc[5]
+          )
+        )
+      ).format("LLLL");
+      return tiempoLocal;
     },
   },
   created: function () {
@@ -411,6 +491,27 @@ export default {
 };
 </script>
 <style scoped>
+.exepcionp {
+  margin-top: 10px;
+}
+.nohayentregadas {
+  display: flex;
+  justify-content: center;
+  /* align-items: center; */
+  background: rgba(255, 190, 70, 0.808);
+  padding: 10px;
+  margin: 10px;
+  border-radius: 8px;
+}
+.primerafila {
+  background: rgb(214, 214, 214);
+  padding: 10px;
+  margin: 10px;
+  border-radius: 8px;
+}
+.dropdown {
+  margin: 20px 0px 20px 0px;
+}
 .botonesorden {
   margin: 5px;
 }
