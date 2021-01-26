@@ -133,7 +133,15 @@ export default {
     console.log("se creo el componente orden de entrega...");
   },
   methods: {
-    guardarOrdenEntrega() {
+    async guardarOrdenEntrega() {
+      var awaitTest = await this.save();
+      if (!awaitTest) {
+        Swal.fire({ icon: "error", text: "Por favor firme la orden!" });
+        return false;
+      } else {
+      }
+      console.log(awaitTest);
+      console.log("after all");
       let filas = this.$refs.tablaParaEntregar.rows;
       let marca_id = this.idOrdenMaquila[0].marca_id;
       let orden_entrega = this.idOrdenMaquila[0].orden_entrega_id;
@@ -143,12 +151,15 @@ export default {
       let muestra_original = this.idOrdenMaquila[0].muestra_original;
       let muestra_referencia = this.idOrdenMaquila[0].muestra_referencia;
       let usuario_id = this.idOrdenMaquila[0].usuario_id;
-      console.log("filasss");
-      console.log(filas);
-      console.log(filas[0]);
+
+      let textoParaCortar = this.firma.split(",");
+      let tipoArchivo = textoParaCortar[0];
+      // this.subirImagen(this.image.dataUrl, this.idOrdenMaquila, tipoArchivo);
 
       let tallasActualizar = {
         marcaId: marca_id,
+        firma: this.firma,
+        tipoArchivo: tipoArchivo,
         modelo: modelo_id,
         prenda: prenda_id,
         folioId: folio_id,
@@ -157,14 +168,12 @@ export default {
         referencia: muestra_referencia,
         usuarioId: usuario_id,
         tallas_actualizar: [],
+        filasOrdenes: [],
       };
-      // tallasActualizar["tallas_actualizar"] = [];
       Array.from(filas).forEach(function (elementR, indexR) {
         let columnas = elementR.childNodes;
         Array.from(columnas).forEach(function (elementC, indexC) {
           if (indexR > 0 && indexC > 1) {
-            // console.log(filas[0].childNodes[indexC].firstChild.value);
-            // console.log(filas[indexR].childNodes[0].firstChild.value);
             let talla = {
               talla: filas[0].childNodes[indexC].firstChild.value,
               coordinado: filas[indexR].childNodes[0].firstChild.value,
@@ -176,25 +185,55 @@ export default {
           }
         });
       });
-      console.log("Las tallas en objeto");
-      console.log(tallasActualizar);
+      let porFilas = [];
+      var fila = {};
+      Array.from(filas).forEach(function (elementR, indexR) {
+        if (indexR > 0) {
+          let columnas = elementR.childNodes;
+          fila = {
+            coordinado: columnas[0].firstChild.value,
+            color: columnas[1].firstChild.value,
+          };
+          Array.from(columnas).forEach(function (elementC, indexC) {
+            if (indexC > 1) {
+              fila[filas[0].childNodes[indexC].firstChild.value] =
+                columnas[indexC].firstChild.value;
+              // console.log(fila);
+            }
+          });
+          porFilas.push(fila);
+        }
+      });
+      tallasActualizar["filasOrdenes"] = porFilas;
+
+      Swal.fire({
+        title: "Espere por favor...",
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        allowEnterKey: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+      }).then((result) => {});
+      console.log("after all");
       axios
         .post("actualizarTallas", tallasActualizar)
         .then((response) => {
-          console.log("la response");
-          console.log(response);
+          Swal.close();
+          Swal.fire({
+            icon: "success",
+            text: "Se guardo la orden de entrega correctamente...",
+            showConfirmButton: true,
+            timer: 2000,
+          }).then(() => {
+            console.log("la response");
+            console.log(response);
+            this.$parent.obtenerOrdenesMaquila();
+            console.log("parent");
+          });
         })
         .catch();
-      Swal.fire({
-        icon: "success",
-        text: "Se guardo la orden de entrega correctamente...",
-        showConfirmButton: true,
-        timer: 2000,
-      }).then(() => {
-        // console.log("lol 1");
-        // console.log(this.$refs);
-        // this.$bvModal.hide("crearorden");
-      });
+      console.log("after all");
     },
     avanzarFirma(firmarYa) {
       console.log("before error");
@@ -218,10 +257,27 @@ export default {
       this.$refs.signaturePad.undoSignature();
     },
     save() {
-      const { isEmpty, data } = this.$refs.signaturePad.saveSignature();
-      console.log("save image");
-      console.log(isEmpty);
-      console.log(data);
+      return new Promise((resolve) => {
+        const { isEmpty, data } = this.$refs.signaturePad.saveSignature();
+        console.log("save image 2.01");
+        console.log(isEmpty);
+        console.log(data);
+        console.log(this.firma);
+        this.firma = "";
+        var _this = this;
+        if (isEmpty) {
+          console.log("esta vacio y el swal??");
+          console.log("esta vacio y el swal??22");
+          resolve(false);
+        } else {
+          console.log(data);
+          console.log("frimandno all ok");
+          console.log(_this.firma);
+          _this.firma = data;
+          console.log(_this.firma);
+          resolve(true);
+        }
+      });
     },
     validarCantidadPorEntregar(idOrdenTalla, value) {
       Swal.fire({
@@ -303,11 +359,13 @@ export default {
       this.$emit("sendData", this.idOrdenParaEntregar);
       console.log("Crear orden entrega...");
       console.log(this.idOrdenMaquila);
+      console.log(this.idOrdenParaEntregar);
     },
   },
   data() {
     return {
       firmarYa: 1,
+      firma: "",
     };
   },
   created: function () {

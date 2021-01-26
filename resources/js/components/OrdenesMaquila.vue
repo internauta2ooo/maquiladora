@@ -377,6 +377,8 @@ export default {
         .then((response) => {
           this.idOrdenParaEntregar = response.data.data;
           this.$bvModal.show("crearorden");
+          console.log("run");
+          console.log(this.idOrdenParaEntregar);
         })
         .catch(() => {
           console.log("no hay ordenes");
