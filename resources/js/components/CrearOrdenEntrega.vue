@@ -230,6 +230,7 @@ export default {
             console.log(response);
             this.$parent.obtenerOrdenesMaquila();
             console.log("parent");
+            this.$bvModal.hide("crearorden");
           });
         })
         .catch();

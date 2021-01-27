@@ -200,7 +200,7 @@ export default {
       imagenes: "",
       reiniciarFirma: false,
       fields: [
-        { key: "folio_id", label: "Numero de Orden" },
+        { key: "folio_id", label: "Folio" },
         { key: "modelo_id", label: "Modelo" },
         { key: "marca", label: "Marca" },
         {
@@ -372,10 +372,34 @@ export default {
     },
     crearOrdenEntrega(orden_entrega_id) {
       this.$root.$emit("reiniciarfirma");
+      let sePuedeGenerarOrden = false;
       axios
         .get("obtenerordenesparaentregar?idOrden=" + orden_entrega_id)
         .then((response) => {
+          console.log("iterate?");
+
           this.idOrdenParaEntregar = response.data.data;
+          console.log(this.idOrdenParaEntregar[0]);
+          this.idOrdenParaEntregar[0].ordenesTallas.forEach(
+            (element, index, array) => {
+              console.log("iterate why undifinede");
+              console.log(element.cantidad_orden_restantes);
+              console.log(element);
+              if (
+                element.cantidad_orden_restantes > 0 ||
+                element.cantidad_orden_restantes == null
+              ) {
+                sePuedeGenerarOrden = true;
+              }
+            }
+          );
+          if (!sePuedeGenerarOrden) {
+            Swal.fire({
+              icon: "success",
+              text: "Ya se entrego todo el material",
+            });
+            return false;
+          }
           this.$bvModal.show("crearorden");
           console.log("run");
           console.log(this.idOrdenParaEntregar);
