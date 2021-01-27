@@ -120,6 +120,7 @@
     </div>
     <script type="text/javascript" src="{{ asset('controladores/marca.js') }}"></script>
     <script>
+        obtenerMarcas();
         var availableTags;
         var marcas;
 
@@ -128,6 +129,7 @@
         }
 
         function obtenerMarcas() {
+            console.log("me ejucuto al iniciar");
             return new Promise((resolve) => {
                 axios.get("obtenermarcasauto").then(response => {
                     marcas = response.data;
@@ -269,17 +271,21 @@
     </script>
     <script>
         $("#tags").keyup(function() {
-            obtenerMarcas();
-            if (document.getElementById("tags").value.length == 1) {
-                Swal.fire({
-                    title: "Buscando marcas...",
-                    allowOutsideClick: false,
-                    allowEscapeKey: false,
-                    allowEnterKey: false,
-                    didOpen: () => {
-                        Swal.showLoading();
-                    },
-                });
+
+            if (document.getElementById("tags").value.length > 1) {
+                return false;
+            } else {
+                // Swal.fire({
+                //     title: "Buscando marcas...",
+                //     allowOutsideClick: false,
+                //     allowEscapeKey: false,
+                //     allowEnterKey: false,
+                //     didOpen: () => {
+                //         Swal.showLoading();
+                //     },
+                // });
+                obtenerMarcas();
+
             }
         });
         document.getElementById("idmarca").value = "";

@@ -54,10 +54,13 @@
               <b-col sm="4" class="text-sm-right">
                 <p>Modelo: {{ row.item.modelo_id }}</p>
                 <p>Prenda: {{ row.item.prenda_id }}</p>
-                <p>Muestra original: {{ row.item.muestra_original }}</p>
+                <p>Muestra original: {{ row.item.muestra_original | siono }}</p>
               </b-col>
               <b-col sm="4" class="text-sm-right">
-                <p>Muestra referencia: {{ row.item.muestra_referencia }}</p>
+                <p>
+                  Muestra referencia:
+                  {{ row.item.muestra_referencia | siono }}
+                </p>
                 <p>Usuario: {{ row.item.usuario_id }}</p>
                 <p>Total piezas: {{ row.item.total_piezas }}</p>
               </b-col>
@@ -254,11 +257,17 @@ export default {
         },
       ],
       filter: null,
-      filterOn: [],
+      filterOn: ["folio_id", "modelo_id", "marca", "fecha_creacion"],
       currentPage: 1,
       totalRows: 1,
       perPage: 10,
     };
+  },
+  filters: {
+    siono: function (value) {
+      let siono = value == 1 ? "Si" : "No";
+      return siono;
+    },
   },
   methods: {
     verOrdenEntregada(ordenEntregada) {
