@@ -1,3 +1,5 @@
+/* eslint-disable vue/attribute-hyphenation */
+/* eslint-disable vue/attribute-hyphenation */
 <template>
   <div class="container">
     <b-row align-h="center">
@@ -191,8 +193,14 @@ export default {
   components: {
     CrearOrdenEntrega,
     SubirImagenes,
-    UploadImage,
+    //  UploadImage,
     ImprimirPdf,
+  },
+  filters: {
+    siono: function (value) {
+      let siono = value == 1 ? "Si" : "No";
+      return siono;
+    },
   },
   data() {
     return {
@@ -263,18 +271,26 @@ export default {
       perPage: 10,
     };
   },
-  filters: {
-    siono: function (value) {
-      let siono = value == 1 ? "Si" : "No";
-      return siono;
+  computed: {
+    rows() {
+      return this.items.length;
     },
+  },
+  created: function () {
+    console.log("Component created ordenesmaquila....");
+    this.obtenerOrdenesMaquila();
+  },
+  mounted() {
+    console.log("Component mounted.");
+    this.$root.$on("obtenerimagenes", () => {
+      this.obtenerImagenes();
+    });
   },
   methods: {
     verOrdenEntregada(ordenEntregada) {
       alert(ordenEntregada);
     },
     obtenerImagenes(idOrden) {
-      console.log("before execute error");
       Swal.fire({
         title: "Cargando imagenes...",
         allowOutsideClick: false,
@@ -292,23 +308,14 @@ export default {
           var arrayKey = [];
           response.data.data.forEach((valor, index) => {
             arrayKey.push({ index: valor });
-            console.log("el valor a poner en tro array con key");
-            console.log(valor);
-
             response.data.data[index].imagen_completa =
               valor.tipo_archivo + "," + valor.imagen;
-            console.log(response.data.data);
           });
-          console.log("experimentando");
-          console.log(arrayKey);
-
           this.imagenes = response.data.data;
-
           this.$bvModal.show("subirimagenes");
           Swal.close();
         })
         .catch((error) => {
-          console.log(error);
           Swal.close();
         });
     },
@@ -326,8 +333,6 @@ export default {
         reader.readAsDataURL(blob);
         reader.onloadend = function () {
           base64data = reader.result;
-          console.log("Promise 64x");
-          console.log(base64data);
           this.pdf = base64data;
           resolve(base64data);
         };
@@ -343,16 +348,9 @@ export default {
           blob = new Blob([response.data], {
             type: "application/pdf",
           });
-
-          //   url = window.URL.createObjectURL(blob);
-          // window.open(url, "_system");
         })
-        .catch((error) => {
-          console.log(error);
-        });
+        .catch((error) => {});
       let b64 = await this.blobtoB64(blob);
-      console.log("log me 2.0");
-      console.log(b64);
       this.pdf = b64;
       this.$bvModal.show("imprimirpdf");
     },
@@ -366,16 +364,9 @@ export default {
           blob = new Blob([response.data], {
             type: "application/pdf",
           });
-
-          //   url = window.URL.createObjectURL(blob);
-          // window.open(url, "_system");
         })
-        .catch((error) => {
-          console.log(error);
-        });
+        .catch((error) => {});
       let b64 = await this.blobtoB64(blob);
-      console.log("log me 2.0");
-      console.log(b64);
       this.pdf = b64;
       this.$bvModal.show("imprimirpdf");
     },
@@ -385,15 +376,9 @@ export default {
       axios
         .get("obtenerordenesparaentregar?idOrden=" + orden_entrega_id)
         .then((response) => {
-          console.log("iterate?");
-
           this.idOrdenParaEntregar = response.data.data;
-          console.log(this.idOrdenParaEntregar[0]);
           this.idOrdenParaEntregar[0].ordenesTallas.forEach(
             (element, index, array) => {
-              console.log("iterate why undifinede");
-              console.log(element.cantidad_orden_restantes);
-              console.log(element);
               if (
                 element.cantidad_orden_restantes > 0 ||
                 element.cantidad_orden_restantes == null
@@ -410,11 +395,8 @@ export default {
             return false;
           }
           this.$bvModal.show("crearorden");
-          console.log("run");
-          console.log(this.idOrdenParaEntregar);
         })
         .catch(() => {
-          console.log("no hay ordenes");
           Swal.fire({
             icon: "error",
             text: "No hay información para esta orden...",
@@ -443,8 +425,6 @@ export default {
       axios
         .get("obtenerordenesmaquila")
         .then((response) => {
-          console.log("response");
-          console.log(response);
           Object.keys(response.data).map(function (key, index) {
             let ordenesEntregadas = response.data[key].ordenesEntregadas;
             // ordenesEntregadas
@@ -456,15 +436,8 @@ export default {
               ].fecha_creacion = _this.utcToTimeZoneFrontEnd(
                 fechaCreacionEntregada
               );
-              // ordenesEntregadas[indice].fecha_creacion="ssssxx";
-              console.log(valor.fecha_creacion);
             });
-            // for (item of ordenesEntregadas) {
-            //   console.log("itemmsm");
-            //   console.log(item);
-            // }
             let fechaCreacion = response.data[key].fecha_creacion;
-            //Recibo en formato de la base 2021-01-17 04:39:59 (UTC)
             response.data[key].fecha_creacion = _this.utcToTimeZoneFrontEnd(
               fechaCreacion
             );
@@ -476,19 +449,12 @@ export default {
           });
           this.items = response.data;
           Swal.close();
-          console.log("el funak");
-          console.log(response.data);
         })
         .catch((error) => {
-          console.log(
-            "error general tal vez aqui tendria que recargar la aplicacion..."
-          );
           window.location.href = "ordenesmaquila";
         });
     },
     utcToTimeZoneFrontEnd(utc) {
-      console.log("utcccc");
-      console.log(utc);
       let tiempoUtc = utc.split(/[- :]/);
       moment.locale("es-mx");
       var tiempoLocal = moment(
@@ -504,23 +470,6 @@ export default {
         )
       ).format("LLLL");
       return tiempoLocal;
-    },
-  },
-  created: function () {
-    console.log("Component created ordenesmaquila....");
-    this.obtenerOrdenesMaquila();
-  },
-  mounted() {
-    console.log("Component mounted.");
-    this.$root.$on("obtenerimagenes", () => {
-      this.obtenerImagenes();
-      console.log("Ejecutando metodo remoto x2");
-      console.log(this.idOrdenMaquila);
-    });
-  },
-  computed: {
-    rows() {
-      return this.items.length;
     },
   },
 };
