@@ -159,26 +159,21 @@ class OrdenController extends Controller
                     foreach ($encabezado as $keyE => $itemE) {
                         $i++;
                         foreach ($itemT as $keyI => $itemI) {
-                            if ($itemE === $itemI) {
-                                $tempCoordinado = $itemT["coordinado_id"];
-                                $tempColor = $itemT["color_id"];
-                                // ["cantidad_ordenes_tallas_id"]
-                                // $tempCoordinado = 12;
-                                // $tempColor = 12;
-                                array_push($filaInsertarCantidades, $itemT["cantidad_orden"]);
-                                array_push($filaInsertar, $itemT["cantidad_ordenes_tallas_id"]);
-                                // array_push($filasInsertar, $filaInsertarCantidades);
+                            if ($keyI != "color_id") {
+                                if ($itemE === $itemI) {
+                                    $tempCoordinado = $itemT["coordinado_id"];
+                                    $tempColor = $itemT["color_id"];
+
+                                    array_push($filaInsertarCantidades, $itemT["cantidad_orden"]);
+                                    array_push($filaInsertar, $itemT["cantidad_ordenes_tallas_id"]);
+                                }
                             }
                         }
                     }
                 }
             }
-            // var_dump($filaInsertar);
-            // var_dump($filaInsertarCantidades);
             array_unshift($filaInsertar, $tempColor);
             array_unshift($filaInsertar, $tempCoordinado);
-            //Las cantidades
-            // array_push($filaInsertar, $filaInsertarCantidades);
             array_push($filasOrdenadas, $filaInsertar);
         }
         array_unshift($filasOrdenadas, $encabezado);

@@ -4,10 +4,9 @@
 <script type="text/javascript" src="{{ asset('js/jqueryui1.js') }}"></script>
 <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}" />
 <link href="{{ asset('css/jqueryuitheme.css') }}" rel="stylesheet" />
-<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.1/themes/base/jquery-ui.css" />
 <link rel="stylesheet" href="{{ asset('css/estilosmarca.css') }}" />
 <script type="text/javascript" src="{{ asset('js/firmapadlibreria.js') }}"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+<script type="text/javascript" src="{{ asset('js/sweetalert2.js') }}"></script>
 <!-- Iconos para el tag input -->
 <link rel="stylesheet" href="{{ asset('css/awesomeiconstags.css') }}" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" />
@@ -271,21 +270,10 @@
     </script>
     <script>
         $("#tags").keyup(function() {
-
             if (document.getElementById("tags").value.length > 1) {
                 return false;
             } else {
-                // Swal.fire({
-                //     title: "Buscando marcas...",
-                //     allowOutsideClick: false,
-                //     allowEscapeKey: false,
-                //     allowEnterKey: false,
-                //     didOpen: () => {
-                //         Swal.showLoading();
-                //     },
-                // });
                 obtenerMarcas();
-
             }
         });
         document.getElementById("idmarca").value = "";
@@ -303,7 +291,6 @@
         $('input[name="coordinados"]').amsifySuggestags();
 
     </script>
-
     <style>
         #tags {
             width: 130px;

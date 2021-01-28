@@ -1,13 +1,19 @@
 <template>
   <div class="container">
-    <b-modal title="Crear orden de entrega" id="crearorden" size="xl">
+    <b-modal
+      id="crearorden"
+      title="Crear orden de entrega"
+      size="xl"
+      :no-close-on-backdrop="true"
+      :no-close-on-esc="true"
+    >
       <p>{{ idOrdenMaquila[0].listaOrdenada.folio_id }}</p>
       <b-row>
         <b-col>
           <table
             id="tablaParaEntregar"
-            ref="tablaParaEntregar"
             v-show="!firmarYa"
+            ref="tablaParaEntregar"
           >
             <tbody>
               <template

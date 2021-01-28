@@ -232,19 +232,26 @@ class OrdenServicios
         }
         $filasOrden = array_unique($filasOrden, SORT_REGULAR);
         $filasOrdenadas = array();
+        // var_dump("encabezado");
+        // var_dump($encabezado);
+
+        // var_dump($filasOrden);
+        // var_dump($orden[0]["ordenesTallas"]);
         foreach ($filasOrden as $fila) {
             $filaInsertar = array();
             foreach ($orden[0]["ordenesTallas"] as $keyT => $itemT) {
-                if ($itemT["cantidad_ordenes_id"] == $fila[0]) {
-                    $i = 0;
-                    foreach ($encabezado as $keyE => $itemE) {
-                        $i++;
-                        foreach ($itemT as $keyI => $itemI) {
-                            if ($itemE === $itemI) {
-                                $tempCoordinado = $itemT["coordinado_id"];
-                                $tempColor = $itemT["color_id"];
 
-                                array_push($filaInsertar, $itemT["cantidad_orden"]);
+                if ($itemT["cantidad_ordenes_id"] == $fila[0]) {
+                    foreach ($encabezado as $keyE => $itemE) {
+                        foreach ($itemT as $keyI => $itemI) {
+
+                            if ($keyI != "color_id") {
+                                if ($itemE === $itemI) {
+                                    $tempCoordinado = $itemT["coordinado_id"];
+                                    $tempColor = $itemT["color_id"];
+
+                                    array_push($filaInsertar, $itemT["cantidad_orden"]);
+                                }
                             }
                         }
                     }
@@ -255,6 +262,8 @@ class OrdenServicios
             array_push($filasOrdenadas, $filaInsertar);
         }
         array_unshift($filasOrdenadas, $encabezado);
+        // var_dump("las filas ordenadas testenado");
+        // var_dump($filasOrdenadas);
         return array("datos_orden" => $datosOrden, "lista" => $filasOrdenadas);
     }
     public static function generarOrdenEntregadaPorFila($idOrden)
@@ -302,11 +311,12 @@ class OrdenServicios
                     foreach ($encabezado as $keyE => $itemE) {
                         $i++;
                         foreach ($itemT as $keyI => $itemI) {
-                            if ($itemE === $itemI) {
-                                $tempCoordinado = $itemT["coordinado_id"];
-                                $tempColor = $itemT["color_id"];
-
-                                array_push($filaInsertar, $itemT["cantidad_orden_restantes"]);
+                            if ($keyI != "color_id") {
+                                if ($itemE === $itemI) {
+                                    $tempCoordinado = $itemT["coordinado_id"];
+                                    $tempColor = $itemT["color_id"];
+                                    array_push($filaInsertar, $itemT["cantidad_orden_restantes"]);
+                                }
                             }
                         }
                     }
