@@ -34,6 +34,10 @@ Vue.component(
     "subir-imagenes",
     require("./components/SubirImagenes.vue").default
 );
+Vue.component(
+    "todas-las-ordenes-maquila",
+    require("./components/TodasLasOrdenesMaquila.vue").default
+);
 Vue.component("imprimir-pdf", require("./components/ImprimirPdf.vue").default);
 
 // Vue.component('crear-orden-entrega-modal', require('./components/CrearOrdenEntregaModal.vue').default);

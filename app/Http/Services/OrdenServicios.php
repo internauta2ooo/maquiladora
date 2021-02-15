@@ -95,7 +95,101 @@ class OrdenServicios
         }
         return $ordenesCompleta;
     }
+    public static function obtenerTodasLasOrdenes()
+    {
+        //
+        //
+        //Aqui sin el get y en modo debug deboprobar para ver si hay vulnerabilidad o exposicion de data
+        //
+        //
+        $ordenesEntrega = DB::table("orden_entrega as oe")
+            ->leftJoin("marca as ma", "ma.marca_id", "=", "oe.marca_id")
+            ->leftJoin("cantidad_ordenes as co", "oe.orden_entrega_id", "=", "co.orden_entrega_id")
+            ->leftJoin("cantidad_ordenes_tallas as coe2", "coe2.cantidad_ordenes_id", "=", "co.cantidad_ordenes_id")
+            ->select(
+                "oe.orden_entrega_id",
+                "ma.marca_id as marca_id",
+                "ma.descripcion as marca",
+                "oe.folio_id",
+                "oe.modelo_id",
+                "oe.fecha_entrega",
+                "oe.prenda_id",
+                "oe.muestra_original",
+                "oe.muestra_referencia",
+                "oe.fecha_creacion",
+                "coe2.cantidad_ordenes_tallas_id",
+                "coe2.cantidad_ordenes_id",
+                "coe2.coordinado_id",
+                "coe2.color_id",
+                "coe2.talla_id",
+                "coe2.cantidad_orden",
+                "coe2.cantidad_orden_entregadas",
+                "coe2.cantidad_orden_restantes",
+                "oe.usuario_id",
+            )
+            ->orderByRaw("oe.fecha_creacion DESC")
+            ->paginate(2,1, "page", 1);
+        // ->currentPage(1);
+        // ->get();
 
+        $arregloOrdenes = [];
+        var_dump($ordenesEntrega);
+        foreach ($ordenesEntrega as $key => $item) {
+            $orden["marca_id"] = $item->marca_id;
+            $orden["orden_entrega_id"] = $item->orden_entrega_id;
+            $orden["marca"] = $item->marca;
+            $orden["folio_id"] = $item->folio_id;
+            $orden["modelo_id"] = $item->modelo_id;
+            $orden["fecha_entrega"] = $item->fecha_entrega;
+            $orden["prenda_id"] = $item->prenda_id;
+            $orden["muestra_original"] = $item->muestra_original;
+            $orden["muestra_referencia"] = $item->muestra_referencia;
+            $orden["fecha_creacion"] = $item->fecha_creacion;
+            $orden["usuario_id"] = $item->usuario_id;
+            array_push($arregloOrdenes, $orden);
+        }
+        $arregloOrdenes = array_unique($arregloOrdenes, SORT_REGULAR);
+        $ordenes = [];
+
+        foreach ($arregloOrdenes as $key => $item) {
+            $orden = [];
+            $cantidad_total = 0;
+            foreach ($ordenesEntrega as $item2) {
+                if ($item2->orden_entrega_id == $item["orden_entrega_id"]) {
+                    $cantidad_total += $item2->cantidad_orden;
+                    $ordenArmada = [
+                        "cantidad_ordenes_id" => $item2->cantidad_ordenes_id,
+                        "cantidad_ordenes_tallas_id" => $item2->cantidad_ordenes_tallas_id,
+                        "coordinado_id" => $item2->coordinado_id,
+                        "talla_id" => $item2->talla_id,
+                        "color_id" => $item2->color_id,
+                        "marca_id" => $item2->marca_id,
+                        "cantidad_orden" => $item2->cantidad_orden,
+                        "cantidad_orden_entregadas" => $item2->cantidad_orden_entregadas,
+                        "cantidad_orden_restantes" => $item2->cantidad_orden_restantes,
+                    ];
+                    array_push($orden, $ordenArmada);
+                }
+            }
+            $item["total_piezas"] = $cantidad_total;
+            $item["ordenesTallas"] = $orden;
+            array_push($ordenes, $item);
+        }
+        $ordenesCompleta = array();
+        foreach ($ordenes as $unaOrden) {
+            // var_dump($unaOrden["orden_entrega_id"]);
+            $ordenesEntregadas = OrdenModel::obtenerListaEntregaMaterial($unaOrden["orden_entrega_id"]);
+
+            $unaOrden["ordenesEntregadas"] = $ordenesEntregadas;
+
+            $ordenOrdenada = OrdenServicios::generarOrdenPorFila($unaOrden["orden_entrega_id"]);
+            $ordenOrdenadaEntregada = OrdenServicios::generarOrdenEntregadaPorFila($unaOrden["orden_entrega_id"]);
+            $unaOrden["listaOrdenada"] = $ordenOrdenada["lista"];
+            $unaOrden["listaOrdenadaEntregada"] = $ordenOrdenadaEntregada["lista"];
+            array_push($ordenesCompleta, $unaOrden);
+        }
+        return json_encode($ordenesCompleta);
+    }
     public static function obtenerOrdenes()
     {
         //
@@ -129,6 +223,7 @@ class OrdenServicios
                 "oe.usuario_id",
             )
             ->orderByRaw("oe.fecha_creacion DESC")
+            ->where("oe.activa", "=", 1)
             ->get();
 
         $arregloOrdenes = [];

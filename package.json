@@ -1,7 +1,7 @@
 {
     "private": true,
     "scripts": {
-        "dev": "npm run webpack -- --mode development --watch",
+        "dev": "npm run development",
         "devi": "cross-env NODE_ENV=development webpack --progress --hide-modules",
         "development": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
         "watch": "npm run development -- --watch",
@@ -18,13 +18,8 @@
         "browser-sync": "^2.26.13",
         "browser-sync-webpack-plugin": "^2.3.0",
         "cross-env": "^7.0.3",
-        "eslint": "^7.18.0",
-        "eslint-loader": "^4.0.2",
-        "eslint-plugin-vue": "^7.5.0",
-        "eslint-webpack-plugin": "^2.4.3",
         "jquery": "^3.2",
         "laravel-mix": "^5.0.9",
-        "laravel-mix-eslint-config": "^0.1.7",
         "lodash": "^4.17.19",
         "popper.js": "^1.12",
         "resolve-url-loader": "^3.1.2",

@@ -296,6 +296,11 @@ class OrdenController extends Controller
         $objOrdenes = new OrdenServicios();
         return $objOrdenes->obtenerOrdenes();
     }
+    public function obtenerTodasLasOrdenesMaquilaTallas()
+    {
+        $objOrdenes = new OrdenServicios();
+        return $objOrdenes->obtenerTodasLasOrdenes();
+    }
     //Metodo Para obtener las ordenes que podemos entregar
     public function obtenerOrdenesMaquilaParaEntregar(Request $request)
     {
@@ -312,5 +317,9 @@ class OrdenController extends Controller
     public function obtenerOrdenesMaquila()
     {
         return view('ordenesmaquila');
+    }
+    public function obtenerTodasLasOrdenesMaquila()
+    {
+        return view('todaslasordenesmaquila');
     }
 }
