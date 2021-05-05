@@ -11,7 +11,7 @@ pipeline {
   stages {
     stage('Install dependencies') {
       steps {
-        bat 'cd jenkins-tests && npm i'
+        bat 'npm i'
       }
     }
     stage('Run tests') {
